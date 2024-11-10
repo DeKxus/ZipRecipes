@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "487145969962",
+    "project_id": "ziprecipes-a2bcb",
+    "storage_bucket": "ziprecipes-a2bcb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487145969962:android:8da928b4ab1f7d2808e653",
+        "android_client_info": {
+          "package_name": "com.example.zip_recipes_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbwQ3waERnwFaOk-9jHKAVQqxmpJK8iHI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
