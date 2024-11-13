@@ -15,7 +15,7 @@ class CustomTextField extends StatelessWidget {
     required this.focusedIconPath,
     required this.unfocusedIconPath,
     this.obscureText = false,
-    this.horizontalPadding = const EdgeInsets.symmetric(horizontal: 25.0),
+    this.horizontalPadding = const EdgeInsets.symmetric(horizontal: 30.0),
   }) : super(key: key);
 
   @override
@@ -34,13 +34,19 @@ class CustomTextField extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50.0),
                 boxShadow: [
-                  if (isFocused)
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 12.0,
-                      spreadRadius: 2.0,
-                      offset: Offset(0, 4), // Controls the shadow position
-                    ),
+                  isFocused
+                    ? BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 2.0,
+                        spreadRadius: 2.0,
+                        offset: Offset(0, 2), // Shadow for focused state
+                      )
+                    : BoxShadow(
+                        color: Colors.grey.withOpacity(0.4),
+                        blurRadius: 4.0,
+                        spreadRadius: 5.0,
+                        offset: Offset(0, 0), // Shadow for unfocused state
+                      ),
                 ],
               ),
               child: TextField(
@@ -63,11 +69,19 @@ class CustomTextField extends StatelessWidget {
                   hintStyle: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: isFocused ? Colors.blue : Colors.grey, // Change color here
+                    color: isFocused ? Colors.black : Colors.grey, // Change color here
                   ),
-                  prefixIcon: isFocused 
-                      ? Image.asset(focusedIconPath, width: 5.0, height: 5.0) 
-                      : Image.asset(unfocusedIconPath, width: 2.0, height: 30.0),
+                  prefixIcon: Padding(
+                    padding: EdgeInsets.only(top:8.0, bottom:8.0, left:12.0, right:5.0),
+                    child: SizedBox(
+                      width: 24.0,
+                      height: 24.0,
+                      child: Image.asset(
+                        isFocused ? focusedIconPath : unfocusedIconPath,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             );
