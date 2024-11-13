@@ -5,7 +5,7 @@ import 'package:zip_recipes_app/home/home.dart';
 import 'package:zip_recipes_app/home/settings.dart';
 
 class NavigationPage extends StatefulWidget {
-  const NavigationPage({Key? key}) : super(key: key);
+  const NavigationPage({super.key});
 
   @override
   State<NavigationPage> createState() => _NavigationPageState();
@@ -45,10 +45,10 @@ class _NavigationPageState extends State<NavigationPage> {
         }),
       ),
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Color(0xFFF5F5F5),
-        color: Color(0xFF86D293),
-        animationDuration: Duration(milliseconds: 300),
-        items: [
+        backgroundColor: const Color(0xFFF5F5F5),
+        color: const Color(0xFF86D293),
+        animationDuration: const Duration(milliseconds: 300),
+        items: const [
           Icon(Icons.favorite, color: Colors.white),
           Icon(Icons.home, color: Colors.white),
           Icon(Icons.settings, color: Colors.white),
@@ -63,13 +63,13 @@ class _NavigationPageState extends State<NavigationPage> {
   Widget _getPage(int index) {
     switch (index) {
       case 0:
-        return FavoritesPage();
+        return const FavoritesPage();
       case 1:
-        return HomePage();
+        return const HomePage();
       case 2:
-        return SettingsPage();
+        return const SettingsPage();
       default:
-        return HomePage();
+        return const HomePage();
     }
   }
 

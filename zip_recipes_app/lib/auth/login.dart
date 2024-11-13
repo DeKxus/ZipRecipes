@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:zip_recipes_app/home/navigation.dart';
 import 'package:zip_recipes_app/widgets/custom_pill_button.dart';
 import 'package:zip_recipes_app/widgets/custom_text_field.dart';
 
@@ -22,18 +23,23 @@ class _LoginPageState extends State<LoginPage> {
         email: _emailController.text.trim(), 
         password: _passwordController.text.trim()
       );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const NavigationPage()),
+      );
     } catch (e) {
       // Login failed, show error message
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Login Failed"),
+            title: const Text("Login Failed"),
             content: Text(e.toString()), 
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text("OK"),
+                child: const Text("OK"),
               ),
             ],
           );
@@ -105,7 +111,6 @@ class _LoginPageState extends State<LoginPage> {
               CustomPillButton(
                 text: 'SIGN UP',
                 onPressed: () {
-                  // Add your button press action here
                   print("Button Pressed!");
                   signIn();
                 },
