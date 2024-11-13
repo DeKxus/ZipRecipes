@@ -108,13 +108,23 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 16.0),
 
               //sign in button
-              CustomPillButton(
-                text: 'SIGN UP',
+              ElevatedButton(
                 onPressed: () {
-                  print("Button Pressed!");
+                  print('Botão de Login pressionado');
                   signIn();
                 },
-              ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 114, 189, 106),
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12), // Ajusta o padding do botão
+                ),
+                child: Text(
+                  'Login',
+                  style: TextStyle(
+                    color: Colors.white, // Define a cor do texto
+                    fontSize: 18,        // Tamanho da fonte do texto
+                  ),
+                ),
+              )
             ],
           ),
         ),

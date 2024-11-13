@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:zip_recipes_app/home/scan.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -172,6 +174,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 print("Scan icon clicked");
                 // Add your action for scan icon here
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const ScanPage()));
               },
               child: Container(
                 width: 100,
