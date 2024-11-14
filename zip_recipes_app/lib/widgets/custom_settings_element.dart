@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 class CustomSettingsElement extends StatelessWidget {
   final String imagePath;
   final String labelText;
+  final double? imageWidth;
+  final double? imageHeight;
 
-  // Constructor with optional parameters
   const CustomSettingsElement({
-    Key? key,
+    super.key,
     required this.imagePath,
-    required this.labelText, 
-  }) : super(key: key);
+    required this.labelText,
+    this.imageWidth, // optional image width
+    this.imageHeight, // optional image height
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,21 +24,23 @@ class CustomSettingsElement extends StatelessWidget {
           Container(
             width: 90,
             height: 90,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Image.asset(
                 imagePath,
+                width: imageWidth ?? 50.0,
+                height: imageHeight ?? 50.0,
                 fit: BoxFit.contain,
               ),
             ),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           // Container holding the label text
           Expanded(
-            child: Container(
+            child: SizedBox(
               height: 90,
               child: Center(
                 child: Text(

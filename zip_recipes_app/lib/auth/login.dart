@@ -13,7 +13,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  //text controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -54,13 +53,13 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFF5F5F5),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
             children: [
               
-              SizedBox(height: 100),
+              const SizedBox(height: 100),
 
               // Logo image
               SizedBox(
@@ -72,9 +71,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Primary title text
-              Text(
+              const Text(
                 'Login',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -82,10 +81,10 @@ class _LoginPageState extends State<LoginPage> {
                   color: Colors.black
                 ),
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
 
               // Secondary title text
-              Text(
+              const Text(
                 'Please sign in to continue',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -93,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                   color: Color(0xFF8E8E8E)
                 ),
               ),
-              SizedBox(height: 25),
+              const SizedBox(height: 25),
               
               //email textfield
               CustomTextField(
@@ -102,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                 focusedIconPath: 'assets/images/icons/email_black.png',
                 unfocusedIconPath: 'assets/images/icons/email_grey.png'
                 ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
         
               //password textfield
               CustomTextField(
@@ -112,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
               focusedIconPath: 'assets/images/icons/password_black.png',
                 unfocusedIconPath: 'assets/images/icons/password_grey.png'
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
 
               //sign in button
               Row(
@@ -141,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       "Don't have an account?",
                       style: TextStyle(
                         fontSize: 16.0,
@@ -149,16 +148,15 @@ class _LoginPageState extends State<LoginPage> {
                         color: Colors.grey, 
                       ),
                     ),
-                    SizedBox(width: 8.0), 
+                    const SizedBox(width: 8.0),
                     GestureDetector(
                       onTap: () {
-                        // Handle navigation or page change here
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => RegistPage()),
+                          MaterialPageRoute(builder: (context) => const RegistPage()),
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         "Sign up",
                         style: TextStyle(
                           fontSize: 16.0,
