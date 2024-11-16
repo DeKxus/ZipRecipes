@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:zip_recipes_app/auth/login.dart';
+import 'package:zip_recipes_app/home/select_plan.dart';
 import 'package:zip_recipes_app/widgets/custom_pill_button.dart';
 import 'package:zip_recipes_app/widgets/custom_text_field.dart';
 
@@ -37,6 +38,11 @@ class _RegistPageState extends State<RegistPage> {
             _firstNameController.text.trim(),
             _lastNameController.text.trim(),
             _emailController.text.trim(),
+          );
+
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SelectPlan())
           );
         }
       } catch (e) {

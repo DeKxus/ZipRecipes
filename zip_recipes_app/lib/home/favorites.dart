@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:zip_recipes_app/widgets/custom_favorite_element.dart';
 
 class FavoritesPage extends StatefulWidget {
@@ -18,7 +16,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     };
   });
   List<Map<String, String>> _filteredRecipes = [];
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -50,10 +48,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
       body: Column(
         children: [
           // Page Title
-          Align(
+          const Align(
             alignment: Alignment.centerLeft,
             child: Padding(
-              padding: const EdgeInsets.only(left: 20.0, top: 50.0),
+              padding: EdgeInsets.only(left: 20.0, top: 50.0),
               child: Text(
                 'Favorite Recipes',
                 style: TextStyle(
@@ -72,7 +70,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search favorite recipes...',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                   borderSide: BorderSide.none,
@@ -86,7 +84,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
           // Spacer and list of favorite items
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               itemCount: _filteredRecipes.length,
               itemBuilder: (context, index) {
                 final recipe = _filteredRecipes[index];
