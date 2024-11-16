@@ -50,10 +50,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
       body: Column(
         children: [
           // Page Title
-          Align(
+          const Align(
             alignment: Alignment.centerLeft,
             child: Padding(
-              padding: const EdgeInsets.only(left: 20.0, top: 50.0),
+              padding: EdgeInsets.only(left: 20.0, top: 50.0),
               child: Text(
                 'Favorite Recipes',
                 style: TextStyle(
@@ -86,7 +86,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
           // Spacer and list of favorite items
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               itemCount: _filteredRecipes.length,
               itemBuilder: (context, index) {
                 final recipe = _filteredRecipes[index];

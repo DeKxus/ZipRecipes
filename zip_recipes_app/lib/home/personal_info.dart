@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:zip_recipes_app/widgets/date_field.dart';
@@ -49,19 +48,30 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.grey),
+          onPressed: () {
+            Navigator.pop(context); // Volta para a página anterior (SettingsPage)
+          },
+        ),
+        title: const Text(
+          'Personal Info',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 30),
-            const Text(
-              'Personal Info',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
             const SizedBox(height: 20),
             CustomTextField(
               label: "First Name",
@@ -76,7 +86,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             CustomDateField(
               label: 'Date of Birth:',
               controller: _dobController,
-              onTap: () => _selectDate(context), // Pass _selectDate as the onTap callback
+              onTap: () => _selectDate(context),
             ),
             Row(
               children: [
