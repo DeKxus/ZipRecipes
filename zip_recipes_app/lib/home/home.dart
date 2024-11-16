@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-
+import 'package:firebase_auth/firebase_auth.dart'; // Importa o FirebaseAuth
 import 'package:zip_recipes_app/home/scan.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,6 +11,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String userName = "User"; // Nome padrão caso não haja autenticação
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserName(); // Obtém o nome do utilizador ao inicializar
+  }
+
+  // Método para buscar o nome do utilizador autenticado
+  void _fetchUserName() {
+    final User? user = FirebaseAuth.instance.currentUser; // Obtém o utilizador atual
+    setState(() {
+      if (user != null) {
+        userName = user.displayName ?? user.email ?? "User"; // Nome, Email ou "User" como fallback
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -102,13 +120,14 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          const Positioned(
+          // Substituir pelo nome do utilizador autenticado
+          Positioned(
             top: 83,
             left: 120,
             child: Text(
-              'João Zarcos',
+              userName, // Nome do utilizador
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Color.fromRGBO(0, 0, 0, 1),
                 fontFamily: 'Inter',
                 fontSize: 24,
@@ -150,10 +169,10 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          Positioned(
+          const Positioned(
             top: 92,
             left: 261,
-            child: const Text(
+            child: Text(
               '1000 cal',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -173,8 +192,10 @@ class _HomePageState extends State<HomePage> {
             child: GestureDetector(
               onTap: () {
                 print("Scan icon clicked");
-                // Add your action for scan icon here
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const ScanPage()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ScanPage()),
+                );
               },
               child: Container(
                 width: 100,
@@ -204,7 +225,6 @@ class _HomePageState extends State<HomePage> {
             child: GestureDetector(
               onTap: () {
                 print("Groceries icon clicked");
-                // Add your action for groceries icon here
               },
               child: Container(
                 width: 100,
