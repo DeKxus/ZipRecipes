@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:zip_recipes_app/home/sports_plan.dart';
 
 import '../widgets/build_plan_option.dart';
 import '../widgets/plan_option.dart';
+import 'navigation.dart';
 
 class SelectPlan extends StatefulWidget {
   const SelectPlan({super.key});
@@ -28,6 +30,30 @@ class _SelectPlanState extends State<SelectPlan> {
     ),
   ];
 
+  void _onPlanSelected(PlanOption plan) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('You selected: ${plan.title}'),
+      ),
+    );
+
+    if (plan.title == 'Sports') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PlanInputScreen(planTitle: plan.title, planIcon: plan.icon, iconColor: plan.iconColor),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const NavigationPage(),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +77,11 @@ class _SelectPlanState extends State<SelectPlan> {
             const SizedBox(height: 40),
             ...planOptions.map((plan) => Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
-              child: PlanOptionCard(plan: plan),
+              child: InkWell(
+                onTap: () => _onPlanSelected(plan),
+                borderRadius: BorderRadius.circular(16),
+                child: PlanOptionCard(plan: plan),
+              ),
             )),
             const Spacer(),
             const Center(

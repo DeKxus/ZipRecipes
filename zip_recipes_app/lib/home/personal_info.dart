@@ -54,7 +54,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.grey),
           onPressed: () {
-            Navigator.pop(context); // Volta para a página anterior (SettingsPage)
+            Navigator.pop(context);
           },
         ),
         title: const Text(
