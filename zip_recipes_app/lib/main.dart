@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:zip_recipes_app/auth/regist.dart';
-
 import 'auth/login.dart';
 
 
