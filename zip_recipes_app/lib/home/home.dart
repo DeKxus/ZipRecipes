@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:firebase_auth/firebase_auth.dart'; // Importa o FirebaseAuth
+import 'package:zip_recipes_app/home/personal_info.dart';
 import 'package:zip_recipes_app/home/scan.dart';
+import 'FoodDetails.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,20 +13,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String userName = "User"; // Nome padrão caso não haja autenticação
+  String userName = "User";
+  int currentFoodIndex = 0; // Index para alternar entre imagens de pratos
+  final List<String> foodImages = [
+    'assets/images/icons/food.png',
+    'assets/images/icons/food2.png'
+  ]; // Lista de imagens
+  final List<String> foodNames = ["Pizza", "Burger"]; // Nomes dos pratos
 
   @override
   void initState() {
     super.initState();
-    _fetchUserName(); // Obtém o nome do utilizador ao inicializar
+    _fetchUserName();
   }
 
-  // Método para buscar o nome do utilizador autenticado
   void _fetchUserName() {
-    final User? user = FirebaseAuth.instance.currentUser; // Obtém o utilizador atual
+    final User? user = FirebaseAuth.instance.currentUser;
     setState(() {
       if (user != null) {
-        userName = user.displayName ?? user.email ?? "User"; // Nome, Email ou "User" como fallback
+        userName = user.email ?? user.displayName ?? "User";
+      }
+    });
+  }
+
+  void _changeFoodImage(int direction) {
+    setState(() {
+      currentFoodIndex = (currentFoodIndex + direction) % foodImages.length;
+      if (currentFoodIndex < 0) {
+        currentFoodIndex = foodImages.length - 1; // Vai para o último item
       }
     });
   }
@@ -39,7 +55,7 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Stack(
         children: <Widget>[
-          // Circular background behind the food image, centered
+          // Circular background
           Center(
             child: Container(
               width: 225,
@@ -50,82 +66,112 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // Food image, centered
           Center(
             child: Container(
               width: 262,
               height: 262,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/icons/food.png'),
+                  image: AssetImage(foodImages[currentFoodIndex]),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
           ),
-          // Left arrow, aligned to the left of the food image
           Positioned(
             top: 336,
             left: 20,
-            child: Container(
-              width: 60,
-              height: 60,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/icons/back.png'),
-                  fit: BoxFit.fitWidth,
+            child: GestureDetector(
+              onTap: () {
+                _changeFoodImage(-1); // Swipe para esquerda
+              },
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/icons/back.png'),
+                    fit: BoxFit.fitWidth,
+                  ),
                 ),
               ),
             ),
           ),
-          // Right arrow, aligned to the right of the food image
           Positioned(
             top: 336,
             right: 20,
-            child: Container(
-              width: 60,
-              height: 60,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/icons/forward.png'),
-                  fit: BoxFit.fitWidth,
+            child: GestureDetector(
+              onTap: () {
+                // Abrir página de detalhes do prato
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FoodDetailsPage(
+                      foodImage: foodImages[currentFoodIndex],
+                      foodName: foodNames[currentFoodIndex],
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/icons/forward.png'),
+                    fit: BoxFit.fitWidth,
+                  ),
                 ),
               ),
             ),
           ),
-          // Profile image and username
           Positioned(
             top: 66,
             left: 30,
-            child: Container(
-              width: 80,
-              height: 80,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(255, 255, 255, 1),
-                shape: BoxShape.circle,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PersonalInfoPage()),
+                );
+              },
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 1),
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
           ),
           Positioned(
             top: 80,
             left: 44,
-            child: Container(
-              width: 52,
-              height: 52,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/icons/user_black.png'),
-                  fit: BoxFit.fitWidth,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PersonalInfoPage()),
+                );
+              },
+              child: Container(
+                width: 52,
+                height: 52,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/icons/user_black.png'),
+                    fit: BoxFit.fitWidth,
+                  ),
                 ),
               ),
             ),
           ),
-          // Substituir pelo nome do utilizador autenticado
           Positioned(
             top: 83,
             left: 120,
             child: Text(
-              userName, // Nome do utilizador
+              userName,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Color.fromRGBO(0, 0, 0, 1),
@@ -137,7 +183,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // Calorie bar background
           Positioned(
             top: 20,
             left: 220,
@@ -153,7 +198,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // Calorie bar progress
           Positioned(
             top: 84,
             left: 155,
@@ -170,7 +214,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           const Positioned(
-            top: 92,
+            top: 140,
             left: 261,
             child: Text(
               '1000 cal',
@@ -185,13 +229,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // Bottom icons with circular background and click functionality
           Positioned(
             bottom: 80,
             left: 60,
             child: GestureDetector(
               onTap: () {
-                print("Scan icon clicked");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ScanPage()),
@@ -223,9 +265,7 @@ class _HomePageState extends State<HomePage> {
             bottom: 80,
             right: 60,
             child: GestureDetector(
-              onTap: () {
-                print("Groceries icon clicked");
-              },
+              onTap: () {},
               child: Container(
                 width: 100,
                 height: 100,
