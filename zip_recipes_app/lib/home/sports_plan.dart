@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zip_recipes_app/home/navigation.dart';
+import 'package:intl/intl.dart'; // For date formatting
 import '../widgets/num_field.dart';
+import '../widgets/date_field.dart'; // Assuming you have this widget
+import 'navigation.dart';
 
 class PlanInputScreen extends StatefulWidget {
   final String planTitle;
@@ -19,27 +21,41 @@ class PlanInputScreen extends StatefulWidget {
 }
 
 class _PlanInputScreenState extends State<PlanInputScreen> {
-  final TextEditingController ageController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
   final TextEditingController caloriesController = TextEditingController();
+  final TextEditingController dobController = TextEditingController();
 
   @override
   void dispose() {
-    ageController.dispose();
     heightController.dispose();
     weightController.dispose();
     caloriesController.dispose();
+    dobController.dispose();
     super.dispose();
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        dobController.text = DateFormat('dd-MM-yyyy').format(picked);
+      });
+    }
+  }
+
   void _navigateToNextScreen() {
-    final age = ageController.text.trim();
     final height = heightController.text.trim();
     final weight = weightController.text.trim();
     final calories = caloriesController.text.trim();
+    final dob = dobController.text.trim();
 
-    if (age.isEmpty || height.isEmpty || weight.isEmpty || calories.isEmpty) {
+    if (height.isEmpty || weight.isEmpty || calories.isEmpty || dob.isEmpty) {
       // Show a dialog if any field is empty
       showDialog(
         context: context,
@@ -103,9 +119,10 @@ class _PlanInputScreenState extends State<PlanInputScreen> {
                 ],
               ),
               const SizedBox(height: 40),
-              CustomNumberField(
-                label: 'Age',
-                controller: ageController,
+              CustomDateField(
+                label: 'Date of Birth:',
+                controller: dobController,
+                onTap: () => _selectDate(context),
               ),
               const SizedBox(height: 20),
               Row(
@@ -125,16 +142,12 @@ class _PlanInputScreenState extends State<PlanInputScreen> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 20),
-
               CustomNumberField(
                 label: 'Calories',
                 controller: caloriesController,
               ),
-
               const SizedBox(height: 40),
-
               ElevatedButton(
                 onPressed: _navigateToNextScreen,
                 style: ElevatedButton.styleFrom(
@@ -144,9 +157,7 @@ class _PlanInputScreenState extends State<PlanInputScreen> {
                 ),
                 child: const Text('Next'),
               ),
-
               const SizedBox(height: 20),
-
               const Center(
                 child: Text(
                   'Don\'t worry, you can change this at any time!',
