@@ -55,9 +55,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       if (snapshot.exists) {
         Map<String, dynamic>? data = snapshot.data();
         setState(() {
-          _firstNameController.text = data?['firstName'] ?? '';
-          _lastNameController.text = data?['lastName'] ?? '';
-          _dobController.text = data?['dob'] ?? '';
+          _firstNameController.text = data?['first name'] ?? '';
+          _lastNameController.text = data?['last name'] ?? '';
+          _dobController.text = data?['date of birth'] ?? '';
           _heightController.text = data?['height']?.toString() ?? '';
           _weightController.text = data?['weight']?.toString() ?? '';
           _caloriesController.text = data?['calories']?.toString() ?? '';
@@ -100,9 +100,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
 
     try {
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'firstName': _firstNameController.text,
-        'lastName': _lastNameController.text,
-        'dob': _dobController.text,
+        'first name': _firstNameController.text,
+        'last name': _lastNameController.text,
+        'date of birth': _dobController.text,
         'height': int.tryParse(_heightController.text) ?? 0,
         'weight': int.tryParse(_weightController.text) ?? 0,
         'calories': int.tryParse(_caloriesController.text) ?? 0,
@@ -203,12 +203,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             // Campos do formulário
             CustomTextField(
               label: "First Name",
-              hint: "John",
+              hint: "-",
               controller: _firstNameController,
             ),
             CustomTextField(
               label: "Last Name",
-              hint: "Doe",
+              hint: "-",
               controller: _lastNameController,
             ),
             CustomDateField(
