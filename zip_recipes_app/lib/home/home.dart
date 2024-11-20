@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:firebase_auth/firebase_auth.dart'; // Importa o FirebaseAuth
+import 'package:zip_recipes_app/firebase/services/ingredient.dart';
+import 'package:zip_recipes_app/firebase/services/recipe.dart';
 import 'package:zip_recipes_app/home/personal_info.dart';
+import 'package:zip_recipes_app/home/recipe_page.dart';
 import 'package:zip_recipes_app/home/scan.dart';
 import 'FoodDetails.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,12 +18,52 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String userName = "User";
-  int currentFoodIndex = 0; // Index para alternar entre imagens de pratos
-  final List<String> foodImages = [
-    'assets/images/icons/food.png',
-    'assets/images/icons/food2.png'
-  ]; // Lista de imagens
-  final List<String> foodNames = ["Pizza", "Burger"]; // Nomes dos pratos
+  int currentRecipeIndex = 0;
+  // Create a sample Recipe object for testing
+  final List<Recipe> recipes = [
+    Recipe(
+      id: '1',
+      name: 'Tuna Salad',
+      image: 'assets/images/icons/food.png',
+      salt: '2g',
+      fat: '10g',
+      energy: '250kcal',
+      protein: '15g',
+      ingredients: [
+        Ingredient(id: 'riceId', name: 'Rice', type: 'Grain'),
+        Ingredient(id: 'appleId', name: 'Apple', type: 'Fruit'),
+        Ingredient(id: 'lettuceId', name: 'Lettuce', type: 'Vegetable'),
+      ],
+      information: 'This is a simple and healthy tuna salad recipe.',
+      guide: [
+        'Step 1: Prepare the tuna.',
+        'Step 2: Mix all the ingredients together.',
+        'Step 3: Serve and enjoy!',
+      ],
+    ),
+    
+    Recipe(
+      id: '2',
+      name: 'Chicken Rice',
+      image: 'assets/images/icons/food2.png',
+      salt: '2g',
+      fat: '10g',
+      energy: '250kcal',
+      protein: '15g',
+      ingredients: [
+        Ingredient(id: 'riceId', name: 'Rice', type: 'Grain'),
+        Ingredient(id: 'appleId', name: 'Apple', type: 'Fruit'),
+        Ingredient(id: 'lettuceId', name: 'Lettuce', type: 'Vegetable'),
+      ],
+      information: 'This is a simple and healthy tuna salad recipe.',
+      guide: [
+        'Step 1: Prepare the tuna.',
+        'Step 2: Mix all the ingredients together.',
+        'Step 3: Serve and enjoy!',
+      ],
+    ),
+    ];
+  
 
   @override
   void initState() {
@@ -38,9 +82,9 @@ class _HomePageState extends State<HomePage> {
 
   void _changeFoodImage(int direction) {
     setState(() {
-      currentFoodIndex = (currentFoodIndex + direction) % foodImages.length;
-      if (currentFoodIndex < 0) {
-        currentFoodIndex = foodImages.length - 1; // Vai para o último item
+      currentRecipeIndex = (currentRecipeIndex + direction) % recipes.length;
+      if (currentRecipeIndex < 0) {
+        currentRecipeIndex = recipes.length - 1; // Vai para o último item
       }
     });
   }
@@ -72,7 +116,7 @@ class _HomePageState extends State<HomePage> {
               height: 262,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(foodImages[currentFoodIndex]),
+                  image: AssetImage(recipes[currentRecipeIndex].image),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -106,10 +150,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => FoodDetailsPage(
-                      foodImage: foodImages[currentFoodIndex],
-                      foodName: foodNames[currentFoodIndex],
-                    ),
+                    builder: (context) => RecipePage(recipe: recipes[currentRecipeIndex],),
                   ),
                 );
               },
