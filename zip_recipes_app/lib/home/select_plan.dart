@@ -22,7 +22,7 @@ class _SelectPlanState extends State<SelectPlan> {
       iconColor: Colors.purple,
     ),
     PlanOption(
-      title: 'Normal',
+      title: 'Normal [Recommended for people who just wants new recipes]',
       description:
       'An every day use plan that present new and fun recipes, improving your eating habits',
       icon: Icons.calendar_today,
