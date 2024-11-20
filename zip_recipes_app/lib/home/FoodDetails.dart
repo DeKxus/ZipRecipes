@@ -5,10 +5,10 @@ class FoodDetailsPage extends StatelessWidget {
   final String foodName;
 
   const FoodDetailsPage({
-    Key? key,
+    super.key,
     required this.foodImage,
     required this.foodName,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

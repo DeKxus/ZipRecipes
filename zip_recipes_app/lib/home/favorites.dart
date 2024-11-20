@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zip_recipes_app/widgets/custom_favorite_element.dart';
+import 'FoodDetails.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
@@ -35,8 +36,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
   void _onSearchChanged() {
     setState(() {
       _filteredRecipes = _allRecipes
-          .where((recipe) =>
-          recipe["name"]!.toLowerCase().contains(_searchController.text.toLowerCase()))
+          .where((recipe) => recipe["name"]!
+          .toLowerCase()
+          .contains(_searchController.text.toLowerCase()))
           .toList();
     });
   }
@@ -44,7 +46,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFF5F5F5),
       body: Column(
         children: [
           // Page Title
@@ -88,9 +90,22 @@ class _FavoritesPageState extends State<FavoritesPage> {
               itemCount: _filteredRecipes.length,
               itemBuilder: (context, index) {
                 final recipe = _filteredRecipes[index];
-                return CustomFavoriteElement(
-                  imagePath: recipe["imagePath"]!,
-                  recipeName: recipe["name"]!,
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FoodDetailsPage(
+                          foodImage: recipe["imagePath"]!,
+                          foodName: recipe["name"]!,
+                        ),
+                      ),
+                    );
+                  },
+                  child: CustomFavoriteElement(
+                    imagePath: recipe["imagePath"]!,
+                    recipeName: recipe["name"]!,
+                  ),
                 );
               },
             ),
