@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Importa o FirebaseAuth
+import 'package:zip_recipes_app/firebase/services/ingredient.dart';
+import 'package:zip_recipes_app/firebase/services/recipe.dart';
 import 'package:zip_recipes_app/home/personal_info.dart';
+import 'package:zip_recipes_app/home/recipe_page.dart';
 import 'package:zip_recipes_app/home/scan.dart';
 import 'FoodDetails.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,13 +18,52 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String userName = "User";
-  int currentFoodIndex = 0;
-  double dragDistance = 0; // Distância percorrida pelo swipe
-  final List<String> foodImages = [
-    'assets/images/icons/food.png',
-    'assets/images/icons/food2.png'
-  ];
-  final List<String> foodNames = ["Pizza", "Burger"];
+  int currentRecipeIndex = 0;
+  // Create a sample Recipe object for testing
+  final List<Recipe> recipes = [
+    Recipe(
+      id: '1',
+      name: 'Tuna Salad',
+      image: 'assets/images/icons/food.png',
+      salt: '2g',
+      fat: '10g',
+      energy: '250kcal',
+      protein: '15g',
+      ingredients: [
+        Ingredient(id: 'riceId', name: 'Rice', type: 'Grain'),
+        Ingredient(id: 'appleId', name: 'Apple', type: 'Fruit'),
+        Ingredient(id: 'lettuceId', name: 'Lettuce', type: 'Vegetable'),
+      ],
+      information: 'This is a simple and healthy tuna salad recipe.',
+      guide: [
+        'Step 1: Prepare the tuna.',
+        'Step 2: Mix all the ingredients together.',
+        'Step 3: Serve and enjoy!',
+      ],
+    ),
+    
+    Recipe(
+      id: '2',
+      name: 'Chicken Rice',
+      image: 'assets/images/icons/food2.png',
+      salt: '2g',
+      fat: '10g',
+      energy: '250kcal',
+      protein: '15g',
+      ingredients: [
+        Ingredient(id: 'riceId', name: 'Rice', type: 'Grain'),
+        Ingredient(id: 'appleId', name: 'Apple', type: 'Fruit'),
+        Ingredient(id: 'lettuceId', name: 'Lettuce', type: 'Vegetable'),
+      ],
+      information: 'This is a simple and healthy tuna salad recipe.',
+      guide: [
+        'Step 1: Prepare the tuna.',
+        'Step 2: Mix all the ingredients together.',
+        'Step 3: Serve and enjoy!',
+      ],
+    ),
+    ];
+  
 
   @override
   void initState() {
@@ -39,17 +82,15 @@ class _HomePageState extends State<HomePage> {
 
   void _changeFoodImage(int direction) {
     setState(() {
-      currentFoodIndex = (currentFoodIndex + direction) % foodImages.length;
-      if (currentFoodIndex < 0) {
-        currentFoodIndex = foodImages.length - 1;
+      currentRecipeIndex = (currentRecipeIndex + direction) % recipes.length;
+      if (currentRecipeIndex < 0) {
+        currentRecipeIndex = recipes.length - 1; // Vai para o último item
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Container(
       width: 375,
       height: 812,
@@ -69,58 +110,24 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // Imagem do prato com movimento dinâmico
           Center(
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  dragDistance += details.delta.dx; // Atualiza a distância percorrida
-                });
-              },
-              onPanEnd: (_) {
-                // Verifica se o swipe foi suficientemente longo
-                if (dragDistance > screenWidth * 0.5) {
-                  // Swipe para direita (aceitar/abrir detalhes)
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FoodDetailsPage(
-                        foodImage: foodImages[currentFoodIndex],
-                        foodName: foodNames[currentFoodIndex],
-                      ),
-                    ),
-                  );
-                } else if (dragDistance < -screenWidth * 0.5) {
-                  // Swipe para esquerda (rejeitar/próximo prato)
-                  _changeFoodImage(1);
-                }
-                // Reseta a distância após o gesto
-                setState(() {
-                  dragDistance = 0;
-                });
-              },
-              child: Transform.translate(
-                offset: Offset(dragDistance, 0), // Movimenta a imagem
-                child: Container(
-                  width: 262,
-                  height: 262,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(foodImages[currentFoodIndex]),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+            child: Container(
+              width: 262,
+              height: 262,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(recipes[currentRecipeIndex].image),
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
           ),
-          // Botão de voltar
           Positioned(
             top: 336,
             left: 20,
             child: GestureDetector(
               onTap: () {
-                _changeFoodImage(-1); // Swipe manual para esquerda
+                _changeFoodImage(-1); // Swipe para esquerda
               },
               child: Container(
                 width: 60,
@@ -134,19 +141,16 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // Botão de avançar
           Positioned(
             top: 336,
             right: 20,
             child: GestureDetector(
               onTap: () {
+                // Abrir página de detalhes do prato
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => FoodDetailsPage(
-                      foodImage: foodImages[currentFoodIndex],
-                      foodName: foodNames[currentFoodIndex],
-                    ),
+                    builder: (context) => RecipePage(recipe: recipes[currentRecipeIndex],),
                   ),
                 );
               },
@@ -162,7 +166,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // Ícone do usuário
           Positioned(
             top: 66,
             left: 30,
@@ -221,6 +224,36 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          Positioned(
+            top: 20,
+            left: 220,
+            child: Transform.rotate(
+              angle: 90 * (math.pi / 180),
+              child: Container(
+                width: 12,
+                height: 209,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(59)),
+                  color: Color.fromRGBO(189, 219, 194, 1),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 84,
+            left: 155,
+            child: Transform.rotate(
+              angle: 90 * (math.pi / 180),
+              child: Container(
+                width: 12,
+                height: 81,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(59)),
+                  color: Color.fromRGBO(134, 210, 147, 1),
+                ),
+              ),
+            ),
+          ),
           const Positioned(
             top: 140,
             left: 261,
@@ -237,7 +270,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // Botões inferiores
           Positioned(
             bottom: 80,
             left: 60,

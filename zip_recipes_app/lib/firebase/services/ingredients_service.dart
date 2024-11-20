@@ -39,4 +39,22 @@ class IngredientService {
       return [];
     }
   }
+
+   // Fetch all ingredients
+  Future<List<Ingredient>> getAllIngredients() async {
+    try {
+      final snapshot = await _ingredientsCollection.get();
+      return snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return Ingredient(
+          id: doc.id,
+          name: data['name'] ?? '',
+          type: data['type'] ?? '',
+        );
+      }).toList();
+    } catch (e) {
+      print('Error fetching all ingredients: $e');
+      return [];
+    }
+  }
 }
