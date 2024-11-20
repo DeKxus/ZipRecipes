@@ -10,7 +10,7 @@ class InsertList extends StatefulWidget {
 }
 
 class _InsertListPageState extends State<InsertList> {
-  late List<Map<String, String>> tags; // Lista de tags dinâmica
+  late List<Map<String, String>> tags;
 
   final List<String> foodItems = [
     'Beef',
@@ -36,7 +36,7 @@ class _InsertListPageState extends State<InsertList> {
   @override
   void initState() {
     super.initState();
-    tags = List.from(widget.initialTags); // Inicializa com as tags recebidas
+    tags = List.from(widget.initialTags);
     filteredFoodItems = List.from(foodItems);
   }
 
@@ -60,12 +60,12 @@ class _InsertListPageState extends State<InsertList> {
 
   Future<void> _showAddQuantityDialog(String ingredient) async {
     String quantity = '';
-    String unit = 'grams'; // Unidade padrão
-    const greenColor = Color(0xFF86D293); // Troque pelo RGB do verde inferior
+    String unit = 'grams';
+    const greenColor = Color(0xFF86D293);
 
     await showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Permite ajustar a altura
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -75,22 +75,17 @@ class _InsertListPageState extends State<InsertList> {
             left: 16,
             right: 16,
             top: 16,
-            bottom: MediaQuery
-                .of(context)
-                .viewInsets
-                .bottom + 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
           ),
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Nome do ingrediente
                 Row(
                   children: [
                     CircleAvatar(
                       backgroundColor: Colors.red.shade100,
-                      child: const Icon(
-                          Icons.restaurant_menu, color: Colors.red),
+                      child: const Icon(Icons.restaurant_menu, color: Colors.red),
                     ),
                     const SizedBox(width: 8.0),
                     Text(
@@ -102,9 +97,7 @@ class _InsertListPageState extends State<InsertList> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 24.0), // Maior espaçamento após o título
-
-                // Texto pequeno "quantity"
+                const SizedBox(height: 24.0),
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -116,8 +109,6 @@ class _InsertListPageState extends State<InsertList> {
                   ),
                 ),
                 const SizedBox(height: 4.0),
-
-                // Campo para inserir quantidade
                 TextField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -130,14 +121,14 @@ class _InsertListPageState extends State<InsertList> {
                     quantity = value;
                   },
                 ),
-                const SizedBox(height: 24.0), // Espaço entre os campos
-
-                // Dropdown para selecionar unidade
+                const SizedBox(height: 24.0),
                 DropdownButtonFormField<String>(
                   value: unit,
                   items: ['grams', 'kg', 'liters', 'ml', 'units']
-                      .map((String value) =>
-                      DropdownMenuItem(value: value, child: Text(value)))
+                      .map((String value) => DropdownMenuItem(
+                    value: value,
+                    child: Text(value),
+                  ))
                       .toList(),
                   onChanged: (value) {
                     unit = value ?? 'grams';
@@ -149,9 +140,7 @@ class _InsertListPageState extends State<InsertList> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 32.0), // Espaço antes dos botões
-
-                // Botões
+                const SizedBox(height: 32.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -167,7 +156,7 @@ class _InsertListPageState extends State<InsertList> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: greenColor,
-                        // Verde extraído do botão inferior
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -175,10 +164,7 @@ class _InsertListPageState extends State<InsertList> {
                       onPressed: () {
                         if (quantity.isNotEmpty) {
                           setState(() {
-                            tags.add({
-                              'name': ingredient,
-                              'quantity': '$quantity $unit'
-                            });
+                            tags.add({'name': ingredient, 'quantity': '$quantity $unit'});
                           });
                         }
                         Navigator.pop(context);
@@ -195,6 +181,34 @@ class _InsertListPageState extends State<InsertList> {
     );
   }
 
+  void _showFeedbackPopup(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Alert'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _onSavePressed() {
+    if (tags.isEmpty) {
+      _showFeedbackPopup(context, 'You need to add at least one ingredient before saving.');
+    } else {
+      _showFeedbackPopup(context, 'Ingredients have been successfully gathered!');
+      Navigator.pop(context, tags);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -210,94 +224,117 @@ class _InsertListPageState extends State<InsertList> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
+      body: Stack(
+        children: [
+          Column(
             children: [
-              // Lista de tags
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: tags.isEmpty
-                    ? const Center(
-                  child: Text(
-                    'No tags added yet',
-                    style: TextStyle(color: Colors.grey),
+              Align(
+                alignment: const Alignment(0, -0.6), // Center horizontally and adjust vertically
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                )
-                    : Wrap(
-                  spacing: 8.0,
-                  runSpacing: 8.0,
-                  children: List.generate(tags.length, (index) {
-                    final tag = tags[index];
-                    return Chip(
-                      label: Text('${tag['name']} - ${tag['quantity']}'),
-                      backgroundColor: index.isEven
-                          ? Colors.green.shade100
-                          : Colors.red.shade100,
-                      deleteIcon:
-                      Icon(Icons.close, color: Colors.grey.shade600),
-                      onDeleted: () => _removeTag(index),
-                    );
-                  }),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Barra de busca e resultados
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.search, color: Colors.grey),
-                        const SizedBox(width: 8.0),
-                        Expanded(
-                          child: TextField(
-                            controller: _searchController,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Search',
-                            ),
-                            onChanged: _updateSearch,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Divider(),
-
-                    SizedBox(
-                      height: 200,
-                      child: ListView.builder(
-                        itemCount: filteredFoodItems.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: const Icon(Icons.restaurant_menu,
-                                color: Colors.red),
-                            title: Text(filteredFoodItems[index]),
-                            onTap: () =>
-                                _showAddQuantityDialog(
-                                    filteredFoodItems[index]),
+                  child: SizedBox(
+                    height: 230, // Height constraint for the scrollable tags
+                    width: MediaQuery.of(context).size.width * 0.8, // Width for centering
+                    child: SingleChildScrollView(
+                      child: Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children: List.generate(tags.length, (index) {
+                          final tag = tags[index];
+                          return Chip(
+                            label: Text('${tag['name']} - ${tag['quantity']}'),
+                            backgroundColor:
+                            index.isEven ? Colors.green.shade100 : Colors.red.shade100,
+                            deleteIcon: Icon(Icons.close, color: Colors.grey.shade600),
+                            onDeleted: () => _removeTag(index),
                           );
-                        },
+                        }),
                       ),
                     ),
-                  ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      // Other non-scrollable content can go here
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
-        ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.search, color: Colors.grey),
+                          const SizedBox(width: 8.0),
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Search',
+                              ),
+                              onChanged: _updateSearch,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(),
+                      SizedBox(
+                        height: 200, // Set height for the ingredients list
+                        child: ListView.builder(
+                          itemCount: filteredFoodItems.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              leading: const Icon(Icons.restaurant_menu, color: Colors.red),
+                              title: Text(filteredFoodItems[index]),
+                              onTap: () => _showAddQuantityDialog(filteredFoodItems[index]),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF86D293),
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: _onSavePressed,
+                    child: const Text('Save'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
