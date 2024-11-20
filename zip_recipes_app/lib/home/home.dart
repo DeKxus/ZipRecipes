@@ -6,6 +6,8 @@ import 'package:zip_recipes_app/firebase/services/recipe.dart';
 import 'package:zip_recipes_app/home/personal_info.dart';
 import 'package:zip_recipes_app/home/recipe_page.dart';
 import 'package:zip_recipes_app/home/scan.dart';
+import 'package:zip_recipes_app/home/groceries.dart';
+
 import 'FoodDetails.dart';
 
 
@@ -306,7 +308,13 @@ class _HomePageState extends State<HomePage> {
             bottom: 80,
             right: 60,
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const GroceriesListPage()), // Replace with your groceries page widget
+                );
+
+              },
               child: Container(
                 width: 100,
                 height: 100,
