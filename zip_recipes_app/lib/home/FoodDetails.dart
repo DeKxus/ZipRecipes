@@ -1,48 +1,156 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FoodDetailsPage extends StatelessWidget {
-  final String foodImage;
-  final String foodName;
+class RecipeDetailsPage extends StatelessWidget {
+  final String recipeId; // Identificador da receita no Firestore
 
-  const FoodDetailsPage({
+  const RecipeDetailsPage({
     super.key,
-    required this.foodImage,
-    required this.foodName,
+    required this.recipeId,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(foodName),
+        title: const Text("Recipe Details"),
         backgroundColor: Colors.green,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              foodImage,
-              width: 300,
-              height: 300,
-              fit: BoxFit.cover,
+      body: FutureBuilder<DocumentSnapshot>(
+        future: FirebaseFirestore.instance.collection('recipes').doc(recipeId).get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || !snapshot.data!.exists) {
+            return const Center(child: Text("Recipe details not found."));
+          }
+
+          final recipeData = snapshot.data!.data() as Map<String, dynamic>;
+
+          final recipeImage = recipeData['image'] ?? '';
+          final recipeName = recipeData['name'] ?? 'Unknown Recipe';
+          final description = recipeData['description'] ?? 'No description available.';
+          final ingredients = List<String>.from(recipeData['ingredients'] ?? []);
+          final nutritionalInfo = Map<String, dynamic>.from(recipeData['nutrition'] ?? {});
+
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Imagem da receita
+                Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: NetworkImage(recipeImage),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Nome da receita
+                Text(
+                  recipeName,
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Informações nutricionais
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: nutritionalInfo.keys.map((key) {
+                      return Column(
+                        children: [
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: const BoxDecoration(
+                              color: Colors.grey,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Text(
+                                '${nutritionalInfo[key]}%',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            key,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Descrição da receita
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Recipe",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        description,
+                        style: const TextStyle(fontSize: 16),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Ingredientes
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Ingredients",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Wrap(
+                        spacing: 8,
+                        children: ingredients.map((ingredient) {
+                          return Chip(
+                            label: Text(ingredient),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            Text(
-              foodName,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              "This is a delicious dish made with fresh ingredients. Enjoy the taste of this delightful meal!",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
