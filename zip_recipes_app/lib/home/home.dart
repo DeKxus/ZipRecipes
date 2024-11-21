@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
       ],
       information: 'This is a simple and healthy tuna salad recipe.',
       guide: [
-        'Step 1: Prepare the tuna.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        'Step 1: Prepare the tuna.',
         'Step 2: Mix all the ingredients together.',
         'Step 3: Serve and enjoy!',
       ],

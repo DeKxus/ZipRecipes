@@ -184,11 +184,25 @@ class _RecipeGuideState extends State<RecipeGuide> {
                         isExpanded = !isExpanded;
                       });
                     },
-                    child: Text(
-                      widget.steps[currentStepIndex],
-                      maxLines: isExpanded ? null : 5, // Truncate and show more on tap
-                      overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.steps[currentStepIndex],
+                          maxLines: isExpanded ? null : 5,
+                          overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        if (widget.steps[currentStepIndex].length > 100)
+                          Text(
+                            isExpanded ? "Show less" : "Read more",
+                            style: const TextStyle(
+                              color: Colors.blue,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -221,14 +235,26 @@ class _RecipeGuideState extends State<RecipeGuide> {
               children: [
                 ElevatedButton(
                   onPressed: timers.length < maxTimers ? showAddTimerDialog : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF86D293), // Green background
+                    foregroundColor: Colors.white, // White text
+                  ),
                   child: const Text('Start Timer'),
                 ),
                 ElevatedButton(
                   onPressed: currentStepIndex > 0 ? previousStep : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF86D293), // Green background
+                    foregroundColor: Colors.white, // White text
+                  ),
                   child: const Text('Previous'),
                 ),
                 ElevatedButton(
                   onPressed: nextStep,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF86D293), // Green background
+                    foregroundColor: Colors.white, // White text
+                  ),
                   child: const Text('Next'),
                 ),
               ],
