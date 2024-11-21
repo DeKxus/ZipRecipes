@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zip_recipes_app/firebase/services/recipe.dart';
+import 'package:zip_recipes_app/home/GuidePage.dart';
 import 'package:zip_recipes_app/home/recipe_guide.dart';
 import 'package:zip_recipes_app/widgets/custom_pill_button.dart';
 import 'package:zip_recipes_app/widgets/custom_recipe_detail_element.dart';
@@ -140,7 +141,7 @@ class RecipePage extends StatelessWidget {
                   onPressed: () {
                      Navigator.push(
                        context,
-                       MaterialPageRoute(builder: (context) => RecipeGuide(steps: recipe.guide,)),
+                       MaterialPageRoute(builder: (context) => GuidePage(guide: recipe.guide,)),
                      );
                   },
                 ),

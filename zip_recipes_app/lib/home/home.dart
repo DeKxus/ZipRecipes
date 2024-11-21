@@ -42,9 +42,11 @@ class _HomePageState extends State<HomePage> {
       ],
       information: 'This is a simple and healthy tuna salad recipe.',
       guide: [
-        'Step 1: Prepare the tuna.',
-        'Step 2: Mix all the ingredients together.',
-        'Step 3: Serve and enjoy!',
+        RecipeStep(description: 'Preheat the oven to 350°F (175°C).'),
+        RecipeStep(description: 'Mix dry ingredients together.', timer: 30),
+        RecipeStep(description: 'Add wet ingredients and mix until smooth.', timer: 30),
+        RecipeStep(description: 'Bake for 30 minutes.', timer: 30),
+        RecipeStep(description: 'Let it cool for 15 minutes.', timer: 15),
       ],
     ),
 
@@ -63,9 +65,11 @@ class _HomePageState extends State<HomePage> {
       ],
       information: 'This is a simple and healthy tuna salad recipe.',
       guide: [
-        'Step 1: Prepare the tuna.',
-        'Step 2: Mix all the ingredients together.',
-        'Step 3: Serve and enjoy!',
+        RecipeStep(description: 'Preheat the oven to 350°F (175°C).'),
+        RecipeStep(description: 'Mix dry ingredients together.', timer: 30),
+        RecipeStep(description: 'Add wet ingredients and mix until smooth.',timer: 30),
+        RecipeStep(description: 'Bake for 30 minutes.', timer: 30),
+        RecipeStep(description: 'Let it cool for 15 minutes.', timer: 15),
       ],
     ),
   ];
