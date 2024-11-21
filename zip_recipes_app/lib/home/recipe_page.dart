@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zip_recipes_app/firebase/services/recipe.dart';
+import 'package:zip_recipes_app/home/recipe_guide.dart';
 import 'package:zip_recipes_app/widgets/custom_pill_button.dart';
 import 'package:zip_recipes_app/widgets/custom_recipe_detail_element.dart';
 
@@ -126,7 +127,7 @@ class RecipePage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
                   child: Text(
                     recipe.information,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                     ),
                   ),
@@ -137,10 +138,10 @@ class RecipePage extends StatelessWidget {
                 CustomPillButton(
                   text: 'COOK IT',
                   onPressed: () {
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => const RecipeGuidePage()),
-                    // );
+                     Navigator.push(
+                       context,
+                       MaterialPageRoute(builder: (context) => RecipeGuide(steps: recipe.guide,)),
+                     );
                   },
                 ),
                 const SizedBox(height: 8),
@@ -150,7 +151,7 @@ class RecipePage extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                      child: const Text(
+                      child: Text(
                         'Ingredients',
                         style: TextStyle(
                           fontSize: 18,
@@ -169,7 +170,7 @@ class RecipePage extends StatelessWidget {
                       return Container(
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                         decoration: BoxDecoration(
-                          color: Color(0xFFD9D9D9),
+                          color: const Color(0xFFD9D9D9),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
