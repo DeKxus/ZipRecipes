@@ -92,7 +92,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 final recipe = _filteredRecipes[index];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(
+                    /*Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => FoodDetailsPage(
@@ -100,7 +100,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                           foodName: recipe["name"]!,
                         ),
                       ),
-                    );
+                    );*/
                   },
                   child: CustomFavoriteElement(
                     imagePath: recipe["imagePath"]!,
