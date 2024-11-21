@@ -19,6 +19,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  final PageController _pageController = PageController(initialPage: 0);
+  double _dragOffset = 0.0; // Controla o deslocamento da imagem
+
   String userName = "User";
   int currentRecipeIndex = 0;
   // Create a sample Recipe object for testing
@@ -43,7 +47,7 @@ class _HomePageState extends State<HomePage> {
         'Step 3: Serve and enjoy!',
       ],
     ),
-    
+
     Recipe(
       id: '2',
       name: 'Chicken Rice',
@@ -64,8 +68,8 @@ class _HomePageState extends State<HomePage> {
         'Step 3: Serve and enjoy!',
       ],
     ),
-    ];
-  
+  ];
+
 
   @override
   void initState() {
@@ -84,9 +88,16 @@ class _HomePageState extends State<HomePage> {
 
   void _changeFoodImage(int direction) {
     setState(() {
-      currentRecipeIndex = (currentRecipeIndex + direction) % recipes.length;
-      if (currentRecipeIndex < 0) {
-        currentRecipeIndex = recipes.length - 1; // Vai para o último item
+      _dragOffset = 0; // Restaura o deslocamento ao mudar de imagem
+      if (direction == -1) {
+        currentRecipeIndex = (currentRecipeIndex + 1) % recipes.length;
+      } else if (direction == 1) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RecipePage(recipe: recipes[currentRecipeIndex]),
+          ),
+        );
       }
     });
   }
@@ -112,15 +123,56 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          Center(
-            child: Container(
-              width: 262,
-              height: 262,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(recipes[currentRecipeIndex].image),
-                  fit: BoxFit.cover,
-                ),
+          GestureDetector(
+            onHorizontalDragUpdate: (details) {
+              setState(() {
+                _dragOffset += details.primaryDelta ?? 0; // Atualiza o deslocamento horizontal
+              });
+            },
+            onHorizontalDragEnd: (details) {
+              setState(() {
+                if ((details.primaryVelocity ?? 0).abs() > 300) {
+                  // Detecta swipe rápido
+                  if (details.primaryVelocity! > 0) {
+                    _changeFoodImage(1); // Swipe para a direita
+                  } else {
+                    _changeFoodImage(-1); // Swipe para a esquerda
+                  }
+                } else {
+                  // Retorna a imagem ao centro
+                  _dragOffset = 0;
+                }
+              });
+            },
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center, // Centraliza verticalmente
+                crossAxisAlignment: CrossAxisAlignment.center, // Centraliza horizontalmente
+                children: [
+                  Transform.translate(
+                    offset: Offset(_dragOffset, 20), // Baixa a imagem ajustando a posição
+                    child: Container(
+                      width: 270,
+                      height: 270,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage(recipes[currentRecipeIndex].image),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10), // Reduz a distância entre a imagem e o título
+                  Text(
+                    recipes[currentRecipeIndex].name,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
