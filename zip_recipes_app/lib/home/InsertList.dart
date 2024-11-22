@@ -272,7 +272,7 @@ class _InsertListPageState extends State<InsertList> {
       ),
       body: isLoading
           ? const Center(
-        child: CircularProgressIndicator(), // Show loading spinner
+        child: CircularProgressIndicator(),
       )
           : Stack(
         children: [
@@ -297,7 +297,7 @@ class _InsertListPageState extends State<InsertList> {
                           final tag = selectedFoodItems[index];
                           return Chip(
                             label: Text('${tag.name} - ${tag.quantity}'),
-                            backgroundColor: _getBackgroundColor(tag.type), // Use ingredient type for color
+                            backgroundColor: _getBackgroundColor(tag.type),
                             deleteIcon: Icon(Icons.close, color: Colors.grey.shade600),
                             onDeleted: () => _removeTag(index),
                           );
