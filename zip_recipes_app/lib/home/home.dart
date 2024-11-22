@@ -62,21 +62,44 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  int userObjectiveCalories = 0;
+  int userCurrentCalories = 0;
+
+  Map<String, String?> userDetails = {};
+
+  void _fetchUserInformation() async {
+  // Service to fetch user details and calories
+  UserService userService = UserService();
+  
+  try {
+    // Fetch user details (generic details, if any)
+    userDetails = await userService.getUserDetails();
+    print('Fetched user details: $userDetails');
+
+    // Fetch user calorie details (objective and current)
+    final calorieDetails = await userService.getUserCalories();
+    print('Fetched calorie details: $calorieDetails');
+
+    // Parse the strings into integers (handling potential format issues)
+    userObjectiveCalories = int.tryParse(calorieDetails['objective calories'] ?? '0') ?? 0;
+    userCurrentCalories = int.tryParse(calorieDetails['current calories'] ?? '0') ?? 0;
+
+    print('User Objective Calories: $userObjectiveCalories');
+    print('User Current Calories: $userCurrentCalories');
+    
+  } catch (e) {
+    print('Error fetching user information: $e');
+  }
+}
+
   @override
   void initState() {
     super.initState();
-    _fetchUserName();
     _fetchRecipes();
+    _fetchUserInformation();
   }
 
-  void _fetchUserName() {
-    final User? user = FirebaseAuth.instance.currentUser;
-    setState(() {
-      if (user != null) {
-        userName = user.email ?? user.displayName ?? "User";
-      }
-    });
-  }
+
 
   void _changeFoodImage(int direction) {
     setState(() {
@@ -276,7 +299,7 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             // Email do usuário
                             Text(
-                              userName,
+                              '${userDetails['first name'] ?? 'First Name'} ${userDetails['last name'] ?? 'Last Name'}',
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -288,41 +311,46 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(height: 0),
 
                             // Barra de progresso com "1000 cal"
-                            Row(
-                              children: [
-                                // Barra de progresso
-                                Container(
-                                  width: 120,
-                                  height: 10,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: FractionallySizedBox(
-                                    alignment: Alignment.centerLeft,
-                                    widthFactor: 0.7, // Progresso da barra (70% preenchido)
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(134, 210, 147, 1),
-                                        borderRadius: BorderRadius.circular(5),
+                            if(userObjectiveCalories > 0)
+                              Row(
+                                children: [
+                                  // Progress bar
+                                  Container(
+                                    width: 120,
+                                    height: 10,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: FractionallySizedBox(
+                                      alignment: Alignment.centerLeft,
+                                      widthFactor: userObjectiveCalories > 0
+                                          ? (userCurrentCalories / userObjectiveCalories).clamp(0.0, 1.0)
+                                          : 0.0, // Calculate progress dynamically
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromRGBO(134, 210, 147, 1),
+                                          borderRadius: BorderRadius.circular(5),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
 
-                                // Espaçamento entre barra e texto "1000 cal"
-                                const SizedBox(width: 8),
+                                  // Space between the bar and the calorie text
+                                  const SizedBox(width: 8),
 
-                                // Texto "1000 cal"
-                                const Text(
-                                  '1000 cal',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(134, 210, 147, 1),
-                                    fontSize: 14,
+                                  // Dynamic calorie text
+                                  Text(
+                                    '$userCurrentCalories / $userObjectiveCalories cal',
+                                    style: const TextStyle(
+                                      color: Color.fromRGBO(134, 210, 147, 1),
+                                      fontSize: 14,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
+                            
+
                           ],
                         ),
                       ],

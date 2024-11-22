@@ -118,7 +118,7 @@ class UserService {
 }
 
   // Update user calories (objective and current)
-  Future<void> updateUserCalories(int objectiveCalories, int currentCalories) async {
+  Future<void> updateUserCalories(String objectiveCalories, String currentCalories) async {
     try {
       final user = _auth.currentUser;
       if (user != null) {
@@ -130,6 +130,32 @@ class UserService {
     } catch (e) {
       print('Error updating user calories: $e');
     }
+  }
+
+  // Function to get user calories (objective and current)
+  Future<Map<String, String>> getUserCalories() async {
+    try {
+      final user = _auth.currentUser; // Ensure _auth is properly initialized
+      if (user != null) {
+        final userDoc = await _usersCollection.doc(user.uid).get();
+        if (userDoc.exists) {
+          final data = userDoc.data() as Map<String, dynamic>;
+          final objectiveCalories = data['objective calories']?.toString() ?? '0';
+          final currentCalories = data['current calories']?.toString() ?? '0';
+          return {
+            'objective calories': objectiveCalories,
+            'current calories': currentCalories,
+          };
+        } else {
+          print('User document does not exist.');
+        }
+      } else {
+        print('No authenticated user.');
+      }
+    } catch (e) {
+      print('Error fetching user calories: $e');
+    }
+    return {'objective calories': '0', 'current calories': '0'}; // Default values
   }
 
   // Update user ingredients
