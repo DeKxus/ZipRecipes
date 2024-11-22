@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Importa Firestore
+import 'package:zip_recipes_app/firebase/services/user_service.dart';
 import 'package:zip_recipes_app/widgets/date_field.dart';
 import 'package:zip_recipes_app/widgets/num_field.dart';
 import 'package:zip_recipes_app/widgets/text_field_personal_info.dart';
@@ -94,40 +95,22 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   }
 
   /// Salva as informações atualizadas no Firestore
-  Future<void> _saveUserInfo() async {
-    final User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
+  Future<void> _setPersonalInfo() async {
+    final UserService userService = UserService();
 
     try {
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'first name': _firstNameController.text,
-        'last name': _lastNameController.text,
-        'date of birth': _dobController.text,
-        'height': int.tryParse(_heightController.text) ?? 0,
-        'weight': int.tryParse(_weightController.text) ?? 0,
-        'calories': int.tryParse(_caloriesController.text) ?? 0,
-      });
+      // Convert the Date of Birth string to a DateTime object
+      DateTime? dob = DateFormat('dd-MM-yyyy').parse(_dobController.text.trim());
 
-      // Exibe uma mensagem de sucesso
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Update Confirmation'),
-            content: const Text('Personal information has been updated successfully!'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
+      // Update user information with a Timestamp for the Date of Birth
+      userService.updateUserSpecificDetails(
+        _weightController.text.trim(),
+        _heightController.text.trim(),
+        Timestamp.fromDate(dob),  // Pass the DateTime object here
+        _caloriesController.text.trim(),
       );
     } catch (e) {
-      print('Erro ao salvar informações do usuário: $e');
+      print('Error updating user info: $e');
     }
   }
 
@@ -205,11 +188,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               label: "First Name",
               hint: "-",
               controller: _firstNameController,
+              isEnabled: false,
             ),
             CustomTextField(
               label: "Last Name",
               hint: "-",
               controller: _lastNameController,
+              isEnabled: false,
             ),
             CustomDateField(
               label: 'Date of Birth:',
@@ -240,7 +225,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             const SizedBox(height: 20),
             Center(
               child: ElevatedButton(
-                onPressed: _saveUserInfo,
+                onPressed: _setPersonalInfo,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF86D293),
                   shape: RoundedRectangleBorder(

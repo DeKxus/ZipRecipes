@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import 'package:firebase_auth/firebase_auth.dart'; // Importa o FirebaseAuth
 import 'package:zip_recipes_app/firebase/services/recipe.dart';
 import 'package:zip_recipes_app/firebase/services/recipe_service.dart';
@@ -17,7 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final PageController _pageController = PageController(initialPage: 0);
   double _dragOffset = 0.0; // Controla o deslocamento da imagem
 
   String userName = "User";

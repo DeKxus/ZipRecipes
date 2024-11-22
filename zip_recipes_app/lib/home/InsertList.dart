@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zip_recipes_app/firebase/services/ingredient.dart';
 import 'package:zip_recipes_app/firebase/services/ingredients_service.dart';
-import 'package:zip_recipes_app/firebase/services/recipe_service.dart';
 import 'package:zip_recipes_app/firebase/services/user_service.dart';
 
 class InsertList extends StatefulWidget {

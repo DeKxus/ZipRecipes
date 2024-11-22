@@ -4,12 +4,14 @@ class CustomTextField extends StatelessWidget {
   final String label;
   final String hint;
   final TextEditingController controller; // Added controller parameter
+  final bool isEnabled;
 
   const CustomTextField({
     super.key,
     required this.label,
     required this.hint,
     required this.controller,
+    this.isEnabled = true,
   });
 
   @override
@@ -25,6 +27,7 @@ class CustomTextField extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           TextField(
+            enabled: isEnabled,
             controller: controller, // Use the controller in TextField
             decoration: InputDecoration(
               hintText: hint,

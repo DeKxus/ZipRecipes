@@ -1,5 +1,3 @@
-import 'dart:ffi' as ffi;
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // For date formatting
@@ -32,23 +30,23 @@ class _PlanInputScreenState extends State<PlanInputScreen> {
   final TextEditingController dobController = TextEditingController();
 
   Future<void> _setPersonalInfo() async {
-  final UserService userService = UserService();
+    final UserService userService = UserService();
 
-  try {
-    // Convert the Date of Birth string to a DateTime object
-    DateTime? dob = DateFormat('dd-MM-yyyy').parse(dobController.text.trim());
+    try {
+      // Convert the Date of Birth string to a DateTime object
+      DateTime? dob = DateFormat('dd-MM-yyyy').parse(dobController.text.trim());
 
-    // Update user information with a Timestamp for the Date of Birth
-    userService.updateUserSpecificDetails(
-      weightController.text.trim(),
-      heightController.text.trim(),
-      Timestamp.fromDate(dob),  // Pass the DateTime object here
-      caloriesController.text.trim(),
-    );
-  } catch (e) {
-    print('Error updating user info: $e');
+      // Update user information with a Timestamp for the Date of Birth
+      userService.updateUserSpecificDetails(
+        weightController.text.trim(),
+        heightController.text.trim(),
+        Timestamp.fromDate(dob),  // Pass the DateTime object here
+        caloriesController.text.trim(),
+      );
+    } catch (e) {
+      print('Error updating user info: $e');
+    }
   }
-}
 
 
   @override
