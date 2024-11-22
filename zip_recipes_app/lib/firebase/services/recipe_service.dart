@@ -52,6 +52,15 @@ class RecipeService {
     final ingredientIds = List<String>.from(data['ingredients'] ?? []);
     final ingredients = await _ingredientService.getIngredientsByIds(ingredientIds);
 
+    // Map the 'guide' field to a List<Step>
+    final guide = (data['guide'] as List<dynamic>? ?? []).map((stepData) {
+      final stepMap = stepData as Map<String, dynamic>;
+      return RecipeStep(
+        description: stepMap['description'] ?? '',
+        timer: stepMap['timer'] != null ? stepMap['timer'] as int : null,
+      );
+    }).toList();
+
     return Recipe(
       id: doc.id,
       name: data['name'] ?? '',
@@ -62,7 +71,7 @@ class RecipeService {
       protein: data['protein'] ?? '',
       ingredients: ingredients,
       information: data['information'] ?? '',
-      guide: List<String>.from(data['guide'] ?? []),
+      guide: guide,
     );
   }
 }

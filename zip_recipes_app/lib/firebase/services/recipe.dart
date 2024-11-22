@@ -15,9 +15,9 @@ class Recipe{
   //Short Recipe explanation
   final String information;
   //Step by step guide
-  final List<String> guide; //it can be a list of tuples (timer value if needed, text about the step)
-  
-   Recipe({
+  final List<RecipeStep> guide; //it can be a list of tuples (timer value if needed, text about the step)
+
+  Recipe({
     required this.id,
     required this.name,
     required this.image,
@@ -28,5 +28,15 @@ class Recipe{
     required this.ingredients,
     required this.information,
     required this.guide,
+  });
+}
+
+class RecipeStep {
+  final String description; // Text about the step
+  final int? timer; // Optional timer in minutes (null if not needed)
+
+  RecipeStep({
+    required this.description,
+    this.timer,
   });
 }

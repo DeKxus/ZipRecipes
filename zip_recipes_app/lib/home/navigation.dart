@@ -21,9 +21,15 @@ class _NavigationPageState extends State<NavigationPage> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (_selectedIndex == index) {
+      // Se já estamos no tab selecionado, garantir que voltamos à raiz da navegação
+      _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
+    } else {
+      // Alterar o índice e mudar para outro tab
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override

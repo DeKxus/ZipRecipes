@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zip_recipes_app/firebase/services/recipe.dart';
+import 'package:zip_recipes_app/home/GuidePage.dart';
 import 'package:zip_recipes_app/home/recipe_guide.dart';
 import 'package:zip_recipes_app/widgets/custom_pill_button.dart';
 import 'package:zip_recipes_app/widgets/custom_recipe_detail_element.dart';
@@ -16,7 +17,7 @@ class RecipePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -37,7 +38,7 @@ class RecipePage extends StatelessWidget {
               child: Container(
                 width: 700, // Diameter of the circle
                 height: 700,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
@@ -50,7 +51,7 @@ class RecipePage extends StatelessWidget {
               child: Container(
                 width: 700, // Diameter of the circle
                 height: 1000,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.rectangle,
                 ),
@@ -73,7 +74,7 @@ class RecipePage extends StatelessWidget {
                 //title
                 Text(
                   recipe.name,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold
                   ),
@@ -98,7 +99,7 @@ class RecipePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CustomRecipeDetailElement(topText: 'Salt', bottomText: recipe.salt),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     CustomRecipeDetailElement(topText: 'Fat', bottomText: recipe.fat),
                     const SizedBox(width: 8),
                     CustomRecipeDetailElement(topText: 'Energy', bottomText: recipe.energy),
@@ -113,7 +114,7 @@ class RecipePage extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-                      child: const Text(
+                      child: Text(
                         'Recipe',
                         style: TextStyle(
                           fontSize: 18,
@@ -140,7 +141,7 @@ class RecipePage extends StatelessWidget {
                   onPressed: () {
                      Navigator.push(
                        context,
-                       MaterialPageRoute(builder: (context) => RecipeGuide(steps: recipe.guide,)),
+                       MaterialPageRoute(builder: (context) => GuidePage(guide: recipe.guide,)),
                      );
                   },
                 ),
