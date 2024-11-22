@@ -122,6 +122,42 @@ class _FoodListPageState extends State<FoodListPage> {
               itemCount: filteredIngredients.length,
               itemBuilder: (context, index) {
                 final ingredient = filteredIngredients[index];
+
+                // Determine the CircleAvatar color based on the ingredient type
+                Color getCircleAvatarColor(String type) {
+                  switch (type) {
+                    case 'Proteins':
+                      return Colors.red.shade100;
+                    case 'Others':
+                      return Colors.purple.shade100;
+                    case 'Dairy':
+                      return const Color.fromRGBO(209, 232, 247, 1);
+                    case 'Grains':
+                      return Colors.yellow.shade100;
+                    case 'Vegetables':
+                      return Colors.green.shade100;
+                    default:
+                      return Colors.grey.shade300;
+                  }
+                }
+
+                Color getIconColor(String type) {
+                  switch (type) {
+                    case 'Proteins':
+                      return Colors.red;
+                    case 'Others':
+                      return Colors.purple;
+                    case 'Dairy':
+                      return Colors.blue;
+                    case 'Grains':
+                      return Colors.orange;
+                    case 'Vegetables':
+                      return Colors.green.shade700;
+                    default:
+                      return Colors.grey;
+                  }
+                }
+
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                   child: Container(
@@ -132,8 +168,11 @@ class _FoodListPageState extends State<FoodListPage> {
                     ),
                     child: ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Colors.red.shade100,
-                        child: const Icon(Icons.restaurant_menu, color: Colors.red),
+                        backgroundColor: getCircleAvatarColor(ingredient.type),
+                        child: Icon(
+                          Icons.restaurant_menu,
+                          color: getIconColor(ingredient.type),
+                        ),
                       ),
                       title: Text(
                         ingredient.name,
@@ -146,6 +185,7 @@ class _FoodListPageState extends State<FoodListPage> {
               },
             ),
           ),
+
         ],
       ),
     );
