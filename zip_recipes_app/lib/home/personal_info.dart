@@ -7,6 +7,8 @@ import 'package:zip_recipes_app/widgets/date_field.dart';
 import 'package:zip_recipes_app/widgets/num_field.dart';
 import 'package:zip_recipes_app/widgets/text_field_personal_info.dart';
 
+import 'navigation.dart';
+
 class PersonalInfoPage extends StatefulWidget {
   const PersonalInfoPage({super.key});
 
@@ -58,10 +60,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
         setState(() {
           _firstNameController.text = data?['first name'] ?? '';
           _lastNameController.text = data?['last name'] ?? '';
-          _dobController.text = data?['date of birth'] ?? '';
-          _heightController.text = data?['height']?.toString() ?? '';
-          _weightController.text = data?['weight']?.toString() ?? '';
-          _caloriesController.text = data?['calories']?.toString() ?? '';
+          _dobController.text = (data?['date of birth'] != null)
+              ? DateFormat('dd-MM-yyyy').format((data?['date of birth'] as Timestamp).toDate())
+              : '';
+          _heightController.text = data?['heigth'] ?? '';
+          _weightController.text = data?['weight'] ?? '';
+          _caloriesController.text = data?['objective calories'] ?? '';
         });
       }
     } catch (e) {
@@ -98,21 +102,73 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   Future<void> _setPersonalInfo() async {
     final UserService userService = UserService();
 
+    // Check if all fields have text
+    if (_weightController.text.trim().isEmpty ||
+        _heightController.text.trim().isEmpty ||
+        _dobController.text.trim().isEmpty ||
+        _caloriesController.text.trim().isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Incomplete Information'),
+            content: const Text('Please fill out all the fields before updating your profile.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     try {
       // Convert the Date of Birth string to a DateTime object
       DateTime? dob = DateFormat('dd-MM-yyyy').parse(_dobController.text.trim());
 
       // Update user information with a Timestamp for the Date of Birth
-      userService.updateUserSpecificDetails(
+      await userService.updateUserSpecificDetails(
         _weightController.text.trim(),
         _heightController.text.trim(),
-        Timestamp.fromDate(dob),  // Pass the DateTime object here
+        Timestamp.fromDate(dob),
         _caloriesController.text.trim(),
+      );
+
+      // Show a success pop-up
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Update Successful'),
+            content: const Text('Your personal information has been updated successfully!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NavigationPage(),
+                    ),
+                  ); // Navigate to the main menu
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
       );
     } catch (e) {
       print('Error updating user info: $e');
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {

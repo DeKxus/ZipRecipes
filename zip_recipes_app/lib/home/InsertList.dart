@@ -21,6 +21,27 @@ class _InsertListPageState extends State<InsertList> {
 
   bool isLoading = true; // Track loading state
 
+  Color _getBackgroundColor(String type) {
+    switch (type) {
+      case 'Proteins':
+        return Colors.red.shade100;
+      case 'Others':
+        return Colors.purple.shade100;
+      case 'Dairy':
+        return const Color.fromRGBO(209, 232, 247, 1);
+      case 'Grains':
+        return Colors.yellow.shade100;
+      case 'Vegetables':
+        return Colors.green.shade100;
+      default:
+        return Colors.grey.shade300;
+    }
+  }
+
+  Color _getDarkerColor(Color color) {
+    return HSLColor.fromColor(color).withLightness((HSLColor.fromColor(color).lightness - 0.2).clamp(0, 1)).toColor();
+  }
+
   void _fetchIngredients() async {
     final IngredientService ingredientService = IngredientService();
 
@@ -29,10 +50,8 @@ class _InsertListPageState extends State<InsertList> {
     });
 
     try {
-    
       foodItems = await ingredientService.getAllIngredients();
       print('Found ${foodItems.length} ingredients.');
-
     } catch (e) {
       print('Error fetching recipes: $e');
     } finally {
@@ -48,11 +67,10 @@ class _InsertListPageState extends State<InsertList> {
 
     try {
       await userService.updateUserIngredients(selectedFoodItems);
-      print('updated user ${selectedFoodItems.length} ingredients.');
-
+      print('Updated user with ${selectedFoodItems.length} ingredients.');
     } catch (e) {
-      print('Error fetching recipes: $e');
-    } 
+      print('Error updating ingredients: $e');
+    }
   }
 
   @override
@@ -60,7 +78,6 @@ class _InsertListPageState extends State<InsertList> {
     super.initState();
     _fetchIngredients();
     selectedFoodItems = List.from(widget.ingredientsToAdd);
-    
   }
 
   void _updateSearch(String query) {
@@ -83,7 +100,7 @@ class _InsertListPageState extends State<InsertList> {
 
   Future<void> _showAddQuantityDialog(Ingredient ingredient) async {
     String quantity = '';
-    String unit = 'grams';
+    String unit = 'g';
     const greenColor = Color(0xFF86D293);
 
     await showModalBottomSheet(
@@ -107,8 +124,8 @@ class _InsertListPageState extends State<InsertList> {
                 Row(
                   children: [
                     CircleAvatar(
-                      backgroundColor: Colors.red.shade100,
-                      child: const Icon(Icons.restaurant_menu, color: Colors.red),
+                      backgroundColor: _getBackgroundColor(ingredient.type),
+                      child: Icon(Icons.restaurant_menu, color: _getDarkerColor(_getBackgroundColor(ingredient.type))),
                     ),
                     const SizedBox(width: 8.0),
                     Text(
@@ -147,7 +164,7 @@ class _InsertListPageState extends State<InsertList> {
                 const SizedBox(height: 24.0),
                 DropdownButtonFormField<String>(
                   value: unit,
-                  items: ['grams', 'kg', 'liters', 'ml', 'units']
+                  items: ['g', 'kg', 'liters', 'ml', 'units']
                       .map((String value) => DropdownMenuItem(
                     value: value,
                     child: Text(value),
@@ -187,7 +204,12 @@ class _InsertListPageState extends State<InsertList> {
                       onPressed: () {
                         if (quantity.isNotEmpty) {
                           setState(() {
-                            selectedFoodItems.add(IngredientWithQuantity(id:ingredient.id, name: ingredient.name, type: ingredient.type, quantity: '$quantity $unit'));
+                            selectedFoodItems.add(IngredientWithQuantity(
+                              id: ingredient.id,
+                              name: ingredient.name,
+                              type: ingredient.type,
+                              quantity: '$quantity $unit',
+                            ));
                           });
                         }
                         Navigator.pop(context);
@@ -229,7 +251,6 @@ class _InsertListPageState extends State<InsertList> {
       _showFeedbackPopup(context, 'You need to add at least one ingredient before saving.');
     } else {
       _showFeedbackPopup(context, 'Ingredients have been successfully gathered!');
-      //TODO save ingredients to the user
       _updateUserIngredients();
       Navigator.pop(context);
     }
@@ -249,16 +270,16 @@ class _InsertListPageState extends State<InsertList> {
           },
         ),
       ),
-      body:isLoading
+      body: isLoading
           ? const Center(
-              child: CircularProgressIndicator(), // Show loading spinner
-            )
+        child: CircularProgressIndicator(), // Show loading spinner
+      )
           : Stack(
         children: [
           Column(
             children: [
               Align(
-                alignment: const Alignment(0, -0.6), // Center horizontally and adjust vertically
+                alignment: const Alignment(0, -0.6),
                 child: Container(
                   padding: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
@@ -266,8 +287,8 @@ class _InsertListPageState extends State<InsertList> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: SizedBox(
-                    height: 230, // Height constraint for the scrollable tags
-                    width: MediaQuery.of(context).size.width * 0.8, // Width for centering
+                    height: 230,
+                    width: MediaQuery.of(context).size.width * 0.8,
                     child: SingleChildScrollView(
                       child: Wrap(
                         spacing: 8.0,
@@ -276,14 +297,14 @@ class _InsertListPageState extends State<InsertList> {
                           final tag = selectedFoodItems[index];
                           return Chip(
                             label: Text('${tag.name} - ${tag.quantity}'),
-                            backgroundColor:
-                            index.isEven ? Colors.green.shade100 : Colors.red.shade100,
+                            backgroundColor: _getBackgroundColor(tag.type), // Use ingredient type for color
                             deleteIcon: Icon(Icons.close, color: Colors.grey.shade600),
                             onDeleted: () => _removeTag(index),
                           );
                         }),
                       ),
                     ),
+
                   ),
                 ),
               ),
@@ -291,9 +312,7 @@ class _InsertListPageState extends State<InsertList> {
                 child: SingleChildScrollView(
                   padding: EdgeInsets.all(16.0),
                   child: Column(
-                    children: [
-                      // Other non-scrollable content can go here
-                    ],
+                    children: [],
                   ),
                 ),
               ),
@@ -330,12 +349,17 @@ class _InsertListPageState extends State<InsertList> {
                       ),
                       const Divider(),
                       SizedBox(
-                        height: 200, // Set height for the ingredients list
+                        height: 200,
                         child: ListView.builder(
                           itemCount: filteredFoodItems.length,
                           itemBuilder: (context, index) {
+                            final backgroundColor = _getBackgroundColor(filteredFoodItems[index].type);
+                            final darkerColor = _getDarkerColor(backgroundColor);
                             return ListTile(
-                              leading: const Icon(Icons.restaurant_menu, color: Colors.red),
+                              leading: CircleAvatar(
+                                backgroundColor: backgroundColor,
+                                child: Icon(Icons.restaurant_menu, color: darkerColor),
+                              ),
                               title: Text(filteredFoodItems[index].name),
                               onTap: () => _showAddQuantityDialog(filteredFoodItems[index]),
                             );
