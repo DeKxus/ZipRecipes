@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:zip_recipes_app/firebase/services/recipe.dart';
+import 'package:zip_recipes_app/firebase/services/user_service.dart';
 import 'package:zip_recipes_app/widgets/custom_pill_button.dart';
 import 'package:zip_recipes_app/widgets/step_load_bar.dart';
 import 'dart:async';
 
 class GuidePage extends StatefulWidget {
   final List<RecipeStep> guide;
-  const GuidePage({super.key, required this.guide});
+  final Recipe recipe;
+  const GuidePage({super.key, required this.guide, required this.recipe});
 
   @override
   State<GuidePage> createState() => _GuidePageState();
@@ -58,6 +60,34 @@ class _GuidePageState extends State<GuidePage> {
     final secs = seconds % 60;
     return "${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}";
   }
+
+  Future<void> _updateUserCalories() async {
+  try {
+    // Initialize UserService to access the user-related methods
+    final userService = UserService();
+
+    // Fetch the current user details
+    final currentUser = await userService.getCurrentUser();
+    if (currentUser == null) {
+      print("No logged-in user.");
+      return;
+    }
+
+    // Fetch the current calories and parse the recipe energy
+    final currentCalories = int.tryParse(currentUser.currentCalories.toString()) ?? 0;
+    final recipeCaloriesString = widget.recipe.energy.replaceAll('kcal', '').trim();
+    final recipeCalories = int.tryParse(recipeCaloriesString) ?? 0;
+
+    // Update the current calories
+    final updatedCalories = currentCalories + recipeCalories;
+
+    // Call the user service to update the calories in Firestore
+    await userService.updateUserCurrentCalories(updatedCalories.toString());
+    print("Updated calories successfully: $updatedCalories");
+  } catch (e) {
+    print("Error updating user calories: $e");
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -170,8 +200,8 @@ class _GuidePageState extends State<GuidePage> {
                                 if (currentStep == widget.guide.length - 1)
                                   CustomPillButton(
                                     text: 'Done',
-                                    onPressed: () {
-                                      //TODO update calories
+                                    onPressed: () async {
+                                      await _updateUserCalories();
                                       Navigator.pop(context);
                                     },
                                     buttonColor: const Color(0xFF86D293),

@@ -132,6 +132,20 @@ class UserService {
     }
   }
 
+  // Update user calories (objective and current)
+  Future<void> updateUserCurrentCalories(String currentCalories) async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        await _usersCollection.doc(user.uid).update({
+          'current calories': currentCalories,
+        });
+      }
+    } catch (e) {
+      print('Error updating user calories: $e');
+    }
+  }
+
   // Function to get user calories (objective and current)
   Future<Map<String, String>> getUserCalories() async {
     try {
@@ -213,6 +227,21 @@ class UserService {
       }
     } catch (e) {
       print('Error adding favorite recipe: $e');
+    }
+  }
+
+  /// Remove a recipe from the user's favorite recipes list
+  Future<void> removeFavoriteRecipe(String recipeId) async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        await _usersCollection.doc(user.uid).update({
+          'favorite recipes': FieldValue.arrayRemove([recipeId]),
+        });
+        print('Recipe $recipeId removed from favorites.');
+      }
+    } catch (e) {
+      print('Error removing favorite recipe: $e');
     }
   }
 

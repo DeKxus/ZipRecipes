@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zip_recipes_app/firebase/services/recipe.dart';
 import 'package:zip_recipes_app/home/GuidePage.dart';
+import 'package:zip_recipes_app/widgets/custom_favorites_button.dart';
 import 'package:zip_recipes_app/widgets/custom_pill_button.dart';
 import 'package:zip_recipes_app/widgets/custom_recipe_detail_element.dart';
 
@@ -27,7 +28,7 @@ class RecipePage extends StatelessWidget {
             ),
             // Círculo decorativo branco sobre o fundo cinzento
             Positioned(
-              top: 110,
+              top: 160,
               left: -150,
               child: Container(
                 width: 700,
@@ -42,7 +43,16 @@ class RecipePage extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 60), // Espaço para o botão de voltar
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top:12),
+                      child: FavoriteButton(recipeId: recipe.id,),
+                    ),
+                  ],
+                ),
+
                 // Imagem da Receita
                 Center(
                   child: Image.asset(
@@ -120,6 +130,7 @@ class RecipePage extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => GuidePage(
                             guide: recipe.guide,
+                            recipe: recipe,
                           ),
                         ),
                       );
