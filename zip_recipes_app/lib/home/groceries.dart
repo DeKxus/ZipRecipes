@@ -7,190 +7,212 @@ class GroceriesListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.grey),
           onPressed: () {
-            Navigator.pop(context); // Navigate back to the previous page
+            Navigator.pop(context);
           },
         ),
-        title: const Text(
-          'My Groceries',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+        title: const Column(
+          children: [
+            Text(
+              'My Groceries',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 4), // Small spacing
+            Text(
+              'Click on the type of food you want to see',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+          ],
         ),
         centerTitle: true,
       ),
       body: Center(
-        child: Stack(
-          alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            // Bottom Layer: Vegetables
-            Positioned(
-              bottom: 200,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          FoodListPage(foodType: 'Vegetables'),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 300,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(134, 210, 147, 1),
-                    borderRadius: BorderRadius.circular(12),
+            // Top Layer: Others
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                    const FoodListPage(foodType: 'Others'),
                   ),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    'Vegetables',
+                );
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/icons/others_groceries.png',
+                    width: 80,
+                    height: 60,
+                    fit: BoxFit.contain,
+                  ),
+                  const Text(
+                    'Others',
                     style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
+                      fontSize: 11,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
-                ),
+                ],
+              ),
+            ),
+
+            // Third Layer: Proteins and Dairy
+            SizedBox(
+              height: 100,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // First Pair: Proteins
+                  Align(
+                    alignment: const Alignment(-0.25, 0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const FoodListPage(foodType: 'Proteins'),
+                          ),
+                        );
+                      },
+                      child: Stack(
+                        alignment: const Alignment(0.2, 0),
+                        children: [
+                          Image.asset(
+                            'assets/images/icons/proteins_groceries.png',
+                            width: 100,
+                            height: 60,
+                            fit: BoxFit.contain,
+                          ),
+                          const Text(
+                            'Proteins',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Second Pair: Dairy
+                  Align(
+                    alignment: const Alignment(0.25, 0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const FoodListPage(foodType: 'Dairy'),
+                          ),
+                        );
+                      },
+                      child: Stack(
+                        alignment: const Alignment(-0.2, 0),
+                        children: [
+                          Image.asset(
+                            'assets/images/icons/dairy_groceries.png',
+                            width: 100,
+                            height: 60,
+                            fit: BoxFit.contain,
+                          ),
+                          const Text(
+                            'Dairy',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
 
             // Second Layer: Grains
-            Positioned(
-              bottom: 290,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FoodListPage(foodType: 'Grains'),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 240,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(245, 212, 136, 1),
-                    borderRadius: BorderRadius.circular(12),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                    const FoodListPage(foodType: 'Grains'),
                   ),
-                  alignment: Alignment.center,
-                  child: const Text(
+                );
+              },
+              child: Stack(
+                alignment: const Alignment(0, -0.2),
+                children: [
+                  Image.asset(
+                    'assets/images/icons/grains_groceries.png',
+                    width: 270,
+                    height: 90,
+                    fit: BoxFit.contain,
+                  ),
+                  const Text(
                     'Grains',
                     style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
-                ),
+                ],
               ),
             ),
 
-            // Third Layer: Proteins (Left)
-            Positioned(
-              bottom: 380,
-              left: 90,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FoodListPage(foodType: 'Proteins'),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 100,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(255, 170, 171, 1),
-                    borderRadius: BorderRadius.circular(12),
+            // Bottom Layer: Vegetables
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                    const FoodListPage(foodType: 'Vegetables'),
                   ),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    'Proteins',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                );
+              },
+              child: Stack(
+                alignment: const Alignment(0, -0.2),
+                children: [
+                  Image.asset(
+                    'assets/images/icons/plants_groceries.png',
+                    width: 350,
+                    height: 90,
+                    fit: BoxFit.contain,
                   ),
-                ),
-              ),
-            ),
-
-            // Third Layer: Dairy (Right)
-            Positioned(
-              bottom: 380,
-              right: 90,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FoodListPage(foodType: 'Dairy'),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 100,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(209, 232, 247, 1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    'Dairy',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            // Top Layer: Others
-            Positioned(
-              bottom: 470,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FoodListPage(foodType: 'Others'),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 80,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(221, 175, 247, 1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    'Others',
+                  const Text(
+                    'Vegetables',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ],
