@@ -22,11 +22,11 @@ class UserService {
             firstName: data['first name'] ?? '',
             lastName: data['last name'] ?? '',
             email: data['email'] ?? user.email!,
-            dateOfBirth: data['dateOfBirth'] ?? Timestamp(0, 0),
+            dateOfBirth: data['date of birth'] ?? Timestamp(0, 0),
             weight: data['weight'] ?? 0,
             height: data['height'] ?? 0,
-            objectiveCalories: data['objectiveCalories'] ?? 0,
-            currentCalories: data['currentCalories'] ?? 0,
+            objectiveCalories: data['objective calories'] ?? 0,
+            currentCalories: data['current calories'] ?? 0,
             favoriteRecipes: (data['favorite recipes'] as List<dynamic>?)
                   ?.map((item) => item.toString())
                   .toList() ??

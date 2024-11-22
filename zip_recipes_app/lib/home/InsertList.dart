@@ -1,43 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:zip_recipes_app/firebase/services/ingredient.dart';
+import 'package:zip_recipes_app/firebase/services/ingredients_service.dart';
+import 'package:zip_recipes_app/firebase/services/recipe_service.dart';
+import 'package:zip_recipes_app/firebase/services/user_service.dart';
 
 class InsertList extends StatefulWidget {
-  final List<Map<String, String>> initialTags;
+  final List<IngredientWithQuantity> ingredientsToAdd;
 
-  const InsertList({super.key, this.initialTags = const []});
+  const InsertList({super.key, this.ingredientsToAdd = const []});
 
   @override
   State<InsertList> createState() => _InsertListPageState();
 }
 
 class _InsertListPageState extends State<InsertList> {
-  late List<Map<String, String>> tags;
+  late List<IngredientWithQuantity> selectedFoodItems = [];
 
-  final List<String> foodItems = [
-    'Beef',
-    'Chicken',
-    'Fish',
-    'Rice',
-    'Pasta',
-    'Tomato',
-    'Carrot',
-    'Potato',
-    'Broccoli',
-    'Cheese',
-    'Eggs',
-    'Bread',
-    'Milk',
-    'Butter',
-    'Yogurt'
-  ];
-
-  List<String> filteredFoodItems = [];
+  List<Ingredient> foodItems = [];
+  List<Ingredient> filteredFoodItems = [];
   final TextEditingController _searchController = TextEditingController();
+
+  bool isLoading = true; // Track loading state
+
+  void _fetchIngredients() async {
+    final IngredientService ingredientService = IngredientService();
+
+    setState(() {
+      isLoading = true; // Start loading
+    });
+
+    try {
+    
+      foodItems = await ingredientService.getAllIngredients();
+      print('Found ${foodItems.length} ingredients.');
+
+    } catch (e) {
+      print('Error fetching recipes: $e');
+    } finally {
+      setState(() {
+        filteredFoodItems = List.from(foodItems);
+        isLoading = false; // Stop loading after fetching
+      });
+    }
+  }
+
+  void _updateUserIngredients() async {
+    final UserService userService = UserService();
+
+    try {
+      await userService.updateUserIngredients(selectedFoodItems);
+      print('updated user ${selectedFoodItems.length} ingredients.');
+
+    } catch (e) {
+      print('Error fetching recipes: $e');
+    } 
+  }
 
   @override
   void initState() {
     super.initState();
-    tags = List.from(widget.initialTags);
-    filteredFoodItems = List.from(foodItems);
+    _fetchIngredients();
+    selectedFoodItems = List.from(widget.ingredientsToAdd);
+    
   }
 
   void _updateSearch(String query) {
@@ -46,7 +70,7 @@ class _InsertListPageState extends State<InsertList> {
         filteredFoodItems = List.from(foodItems);
       } else {
         filteredFoodItems = foodItems
-            .where((item) => item.toLowerCase().contains(query.toLowerCase()))
+            .where((ingredient) => ingredient.name.toLowerCase().contains(query.toLowerCase()))
             .toList();
       }
     });
@@ -54,11 +78,11 @@ class _InsertListPageState extends State<InsertList> {
 
   void _removeTag(int index) {
     setState(() {
-      tags.removeAt(index);
+      selectedFoodItems.removeAt(index);
     });
   }
 
-  Future<void> _showAddQuantityDialog(String ingredient) async {
+  Future<void> _showAddQuantityDialog(Ingredient ingredient) async {
     String quantity = '';
     String unit = 'grams';
     const greenColor = Color(0xFF86D293);
@@ -89,7 +113,7 @@ class _InsertListPageState extends State<InsertList> {
                     ),
                     const SizedBox(width: 8.0),
                     Text(
-                      ingredient,
+                      ingredient.name,
                       style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
@@ -164,7 +188,7 @@ class _InsertListPageState extends State<InsertList> {
                       onPressed: () {
                         if (quantity.isNotEmpty) {
                           setState(() {
-                            tags.add({'name': ingredient, 'quantity': '$quantity $unit'});
+                            selectedFoodItems.add(IngredientWithQuantity(id:ingredient.id, name: ingredient.name, type: ingredient.type, quantity: '$quantity $unit'));
                           });
                         }
                         Navigator.pop(context);
@@ -202,11 +226,13 @@ class _InsertListPageState extends State<InsertList> {
   }
 
   void _onSavePressed() {
-    if (tags.isEmpty) {
+    if (selectedFoodItems.isEmpty) {
       _showFeedbackPopup(context, 'You need to add at least one ingredient before saving.');
     } else {
       _showFeedbackPopup(context, 'Ingredients have been successfully gathered!');
-      Navigator.pop(context, tags);
+      //TODO save ingredients to the user
+      _updateUserIngredients();
+      Navigator.pop(context);
     }
   }
 
@@ -224,7 +250,11 @@ class _InsertListPageState extends State<InsertList> {
           },
         ),
       ),
-      body: Stack(
+      body:isLoading
+          ? const Center(
+              child: CircularProgressIndicator(), // Show loading spinner
+            )
+          : Stack(
         children: [
           Column(
             children: [
@@ -243,10 +273,10 @@ class _InsertListPageState extends State<InsertList> {
                       child: Wrap(
                         spacing: 8.0,
                         runSpacing: 8.0,
-                        children: List.generate(tags.length, (index) {
-                          final tag = tags[index];
+                        children: List.generate(selectedFoodItems.length, (index) {
+                          final tag = selectedFoodItems[index];
                           return Chip(
-                            label: Text('${tag['name']} - ${tag['quantity']}'),
+                            label: Text('${tag.name} - ${tag.quantity}'),
                             backgroundColor:
                             index.isEven ? Colors.green.shade100 : Colors.red.shade100,
                             deleteIcon: Icon(Icons.close, color: Colors.grey.shade600),
@@ -307,7 +337,7 @@ class _InsertListPageState extends State<InsertList> {
                           itemBuilder: (context, index) {
                             return ListTile(
                               leading: const Icon(Icons.restaurant_menu, color: Colors.red),
-                              title: Text(filteredFoodItems[index]),
+                              title: Text(filteredFoodItems[index].name),
                               onTap: () => _showAddQuantityDialog(filteredFoodItems[index]),
                             );
                           },

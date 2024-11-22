@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:zip_recipes_app/firebase/services/ingredient.dart';
 
 import 'InsertList.dart'; // Importa o arquivo InsertList.dart
 
@@ -15,12 +16,12 @@ class _ScanPageState extends State<ScanPage> {
   final ImagePicker _picker = ImagePicker(); // Instância do ImagePicker
 
   // Lista pré-definida para o botão "Scan Text"
-  final List<Map<String, String>> predefinedTags = [
-    {'name': 'lettuce', 'quantity': '500g'},
-    {'name': 'onion', 'quantity': '500g'},
-    {'name': 'salmon', 'quantity': '500g'},
-    {'name': 'salt', 'quantity': '1kg'},
-    {'name': 'pepper', 'quantity': '25g'}
+  final List<IngredientWithQuantity> predefinedIngredients = [
+    IngredientWithQuantity(id:'i1',type: 'Grains', name: 'rice', quantity: '500g'),
+    IngredientWithQuantity(id:'i2',type: 'Vegetables', name: 'onion', quantity: '500g'),
+    IngredientWithQuantity(id:'i3',type: 'Proteins', name: 'salmon', quantity: '500g'),
+    IngredientWithQuantity(id:'i4',type: 'Others', name: 'Salt', quantity: '1kg'),
+    IngredientWithQuantity(id:'i5', type: 'Others', name: 'pepper', quantity: '25g'),
   ];
 
   Future<void> _openCamera() async {
@@ -30,7 +31,7 @@ class _ScanPageState extends State<ScanPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => InsertList(initialTags: predefinedTags),
+          builder: (context) => InsertList(ingredientsToAdd: predefinedIngredients),
         ),
       );
     }
@@ -41,7 +42,7 @@ class _ScanPageState extends State<ScanPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const InsertList(initialTags: []), // Lista inicial vazia
+        builder: (context) => const InsertList(ingredientsToAdd: []), // Lista inicial vazia
       ),
     );
   }
