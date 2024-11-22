@@ -15,12 +15,17 @@ class RecipePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body:
-      SingleChildScrollView(
+      backgroundColor: Colors.white, // Fundo branco na base
+      body: SingleChildScrollView(
         child: Stack(
           children: [
-            // Background Circles and Decorations
+            // Fundo superior cinzento
+            Container(
+              width: double.infinity,
+              height: 400, // Define a altura do fundo cinzento
+              color: const Color(0xFFF5F5F5), // Cor cinzenta
+            ),
+            // Círculo decorativo branco sobre o fundo cinzento
             Positioned(
               top: 110,
               left: -150,
@@ -33,24 +38,12 @@ class RecipePage extends StatelessWidget {
                 ),
               ),
             ),
-            Positioned(
-              top: 300,
-              left: -150,
-              child: Container(
-                width: 700,
-                height: 1000,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.rectangle,
-                ),
-              ),
-            ),
-            // Scrollable Content
+            // Conteúdo
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 60), // Space for the back button
-                // Recipe Image
+                const SizedBox(height: 60), // Espaço para o botão de voltar
+                // Imagem da Receita
                 Center(
                   child: Image.asset(
                     recipe.image,
@@ -59,8 +52,9 @@ class RecipePage extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(height: 25),
-                // Recipe Title
+                // Adiciona espaço maior abaixo da imagem da receita
+                const SizedBox(height: 20), // Aumente o valor para mais espaço
+                // Título da Receita
                 Center(
                   child: Text(
                     recipe.name,
@@ -71,7 +65,7 @@ class RecipePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Details Section
+                // Seção de Detalhes
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
                   child: Text(
@@ -95,7 +89,7 @@ class RecipePage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                // Recipe Information Section
+                // Seção de Informações da Receita
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
                   child: Text(
@@ -116,7 +110,7 @@ class RecipePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Cook It Button
+                // Botão Cook It
                 Center(
                   child: CustomPillButton(
                     text: 'COOK IT',
@@ -133,7 +127,7 @@ class RecipePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Ingredients Section
+                // Ingredientes
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                   child: Text(
@@ -147,8 +141,9 @@ class RecipePage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 22),
                   child: Wrap(
-                    spacing: 8.0, // Space between pills horizontally
-                    runSpacing: 8.0, // Space between rows
+                    spacing: 8.0, // Espaço entre os "pills" horizontalmente
+                    runSpacing: 8.0, // Espaço entre as linhas
+                    alignment: WrapAlignment.center, // Centraliza os ingredientes
                     children: recipe.ingredients.map((ingredient) {
                       return Container(
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
@@ -171,9 +166,9 @@ class RecipePage extends StatelessWidget {
                 const SizedBox(height: 25),
               ],
             ),
-            // Fixed Back Button
+            // Botão Voltar Fixo
             Positioned(
-              top: MediaQuery.of(context).padding.top + 10, // Adjust for status bar
+              top: MediaQuery.of(context).padding.top + 10, // Ajuste para o status bar
               left: 10,
               child: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.grey),
@@ -187,4 +182,5 @@ class RecipePage extends StatelessWidget {
       ),
     );
   }
+
 }

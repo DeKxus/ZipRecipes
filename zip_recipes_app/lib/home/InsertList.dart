@@ -258,9 +258,9 @@ class _InsertListPageState extends State<InsertList> {
                   ),
                 ),
               ),
-              Expanded(
+              const Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16.0),
                   child: Column(
                     children: [
                       // Other non-scrollable content can go here

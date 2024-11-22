@@ -75,7 +75,7 @@ class _ScanPageState extends State<ScanPage> {
           children: [
             // Scan text element
             GestureDetector(
-              onTap: _openCamera, // Chama o método _openCamera ao pressionar
+              onTap: _openCamera,
               child: Container(
                 width: 150.0,
                 height: 150.0,

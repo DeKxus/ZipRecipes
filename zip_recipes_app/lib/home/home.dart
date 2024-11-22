@@ -9,7 +9,6 @@ import 'package:zip_recipes_app/home/recipe_page.dart';
 import 'package:zip_recipes_app/home/scan.dart';
 import 'package:zip_recipes_app/home/groceries.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -18,12 +17,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   final PageController _pageController = PageController(initialPage: 0);
   double _dragOffset = 0.0; // Controla o deslocamento da imagem
 
   String userName = "User";
   int currentRecipeIndex = 0;
+
   // Create a sample Recipe object for testing
   List<Recipe> recipes = [];
 
@@ -39,19 +38,22 @@ class _HomePageState extends State<HomePage> {
 
     try {
       final ingredients = await userService.getUserIngredients();
-      final ingredientIds = ingredients.map((ingredient) => ingredient.id).toList();
+      final ingredientIds =
+          ingredients.map((ingredient) => ingredient.id).toList();
 
       if (ingredientIds.isNotEmpty) {
         recipes = await recipeService.getRecipesWithIngredients(ingredientIds);
         print('Found ${recipes.length} recipes using user ingredients.');
 
-        if(recipes.length == 0){
+        if (recipes.length == 0) {
           recipes = await recipeService.getAllRecipes();
-          print('User has ingredients but fetched all ${recipes.length} recipes.');
+          print(
+              'User has ingredients but fetched all ${recipes.length} recipes.');
         }
       } else {
         recipes = await recipeService.getAllRecipes();
-        print('User has no ingredients. Fetched all ${recipes.length} recipes.');
+        print(
+            'User has no ingredients. Fetched all ${recipes.length} recipes.');
       }
     } catch (e) {
       print('Error fetching recipes: $e');
@@ -61,7 +63,6 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
-
 
   @override
   void initState() {
@@ -88,7 +89,8 @@ class _HomePageState extends State<HomePage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RecipePage(recipe: recipes[currentRecipeIndex]),
+            builder: (context) =>
+                RecipePage(recipe: recipes[currentRecipeIndex]),
           ),
         );
       }
@@ -104,291 +106,332 @@ class _HomePageState extends State<HomePage> {
         color: Color.fromRGBO(245, 245, 245, 1),
       ),
       child: isLoading
-      ? const Center(
-        child: CircularProgressIndicator(), // Show loading spinner
-      )
-      : Stack(
-        children: <Widget>[
-          // Circular background
-          Center(
-            child: Container(
-              width: 225,
-              height: 225,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(255, 255, 255, 1),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          GestureDetector(
-            onHorizontalDragUpdate: (details) {
-              setState(() {
-                _dragOffset += details.primaryDelta ?? 0; // Atualiza o deslocamento horizontal
-              });
-            },
-            onHorizontalDragEnd: (details) {
-              setState(() {
-                if ((details.primaryVelocity ?? 0).abs() > 300) {
-                  // Detecta swipe rápido
-                  if (details.primaryVelocity! > 0) {
-                    _changeFoodImage(1); // Swipe para a direita
-                  } else {
-                    _changeFoodImage(-1); // Swipe para a esquerda
-                  }
-                } else {
-                  // Retorna a imagem ao centro
-                  _dragOffset = 0;
-                }
-              });
-            },
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center, // Centraliza verticalmente
-                crossAxisAlignment: CrossAxisAlignment.center, // Centraliza horizontalmente
-                children: [
-                  const SizedBox(height: 45),
-                  Transform.translate(
-                    offset: Offset(_dragOffset, 20), // Baixa a imagem ajustando a posição
-                    child: Container(
-                      width: 180,
-                      height: 180,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage(recipes[currentRecipeIndex].image),
-                          fit: BoxFit.cover,
+          ? const Center(
+              child: CircularProgressIndicator(), // Show loading spinner
+            )
+          : Stack(
+              children: <Widget>[
+                // Circular background
+                Center(
+                  child: Container(
+                    width: 225,
+                    height: 225,
+                    decoration: const BoxDecoration(
+                      color: Color.fromRGBO(255, 255, 255, 1),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onHorizontalDragUpdate: (details) {
+                    setState(() {
+                      _dragOffset += details.primaryDelta ??
+                          0; // Atualiza o deslocamento horizontal
+                    });
+                  },
+                  onHorizontalDragEnd: (details) {
+                    setState(() {
+                      if ((details.primaryVelocity ?? 0).abs() > 300) {
+                        // Detecta swipe rápido
+                        if (details.primaryVelocity! > 0) {
+                          _changeFoodImage(1); // Swipe para a direita
+                        } else {
+                          _changeFoodImage(-1); // Swipe para a esquerda
+                        }
+                      } else {
+                        // Retorna a imagem ao centro
+                        _dragOffset = 0;
+                      }
+                    });
+                  },
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Botão "voltar"
+                        GestureDetector(
+                          onTap: () {
+                            _changeFoodImage(-1); // Swipe para esquerda
+                          },
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image:
+                                    AssetImage('assets/images/icons/back.png'),
+                                fit: BoxFit.fitWidth,
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Conteúdo principal (imagem e título)
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 45),
+                            Transform.translate(
+                              offset: Offset(_dragOffset, 20),
+                              // Baixa a imagem ajustando a posição
+                              child: Container(
+                                width: 180,
+                                height: 180,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                        recipes[currentRecipeIndex].image),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 60),
+                            // Reduz a distância entre a imagem e o título
+                            Text(
+                              recipes[currentRecipeIndex].name,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        // Botão "avançar"
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RecipePage(
+                                    recipe: recipes[currentRecipeIndex]),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                    'assets/images/icons/forward.png'),
+                                fit: BoxFit.fitWidth,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Espaçamento superior para posicionar no topo
+                    const SizedBox(height: 70),
+
+                    // Linha com ícone circular, email e barra de progresso
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Ícone circular
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const PersonalInfoPage(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 100,
+                            height: 100,
+                            decoration: const BoxDecoration(
+                              color: Color.fromRGBO(255, 255, 255, 1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                'assets/images/icons/user_black.png',
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // Espaçamento entre o ícone e o restante
+                        const SizedBox(width: 16),
+                        // Coluna com email e barra de progresso
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Email do usuário
+                            Text(
+                              userName,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+
+                            // Espaçamento entre email e barra
+                            const SizedBox(height: 0),
+
+                            // Barra de progresso com "1000 cal"
+                            Row(
+                              children: [
+                                // Barra de progresso
+                                Container(
+                                  width: 120,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: FractionallySizedBox(
+                                    alignment: Alignment.centerLeft,
+                                    widthFactor: 0.7, // Progresso da barra (70% preenchido)
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color.fromRGBO(134, 210, 147, 1),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                // Espaçamento entre barra e texto "1000 cal"
+                                const SizedBox(width: 8),
+
+                                // Texto "1000 cal"
+                                const Text(
+                                  '1000 cal',
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(134, 210, 147, 1),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    // Espaçamento adicional após a linha superior
+                    const SizedBox(height: 20),
+
+                    // Restante do conteúdo (como imagem e botões)
+                    const Expanded(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            // Adicione os widgets restantes do layout aqui
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 50), // Reduz a distância entre a imagem e o título
-                  Text(
-                    recipes[currentRecipeIndex].name,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: 336,
-            left: 20,
-            child: GestureDetector(
-              onTap: () {
-                _changeFoodImage(-1); // Swipe para esquerda
-              },
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/icons/back.png'),
-                    fit: BoxFit.fitWidth,
-                  ),
+                  ],
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 336,
-            right: 20,
-            child: GestureDetector(
-              onTap: () {
-                // Abrir página de detalhes do prato
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RecipePage(recipe: recipes[currentRecipeIndex],),
-                  ),
-                );
-              },
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/icons/forward.png'),
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 66,
-            left: 30,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PersonalInfoPage()),
-                );
-              },
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: const BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 1),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 80,
-            left: 44,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PersonalInfoPage()),
-                );
-              },
-              child: Container(
-                width: 52,
-                height: 52,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/icons/user_black.png'),
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 83,
-            left: 120,
-            child: Text(
-              userName,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Color.fromRGBO(0, 0, 0, 1),
-                fontFamily: 'Inter',
-                fontSize: 24,
-                letterSpacing: -0.3333333432674408,
-                fontWeight: FontWeight.normal,
-                height: 1,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 20,
-            left: 220,
-            child: Transform.rotate(
-              angle: 90 * (math.pi / 180),
-              child: Container(
-                width: 12,
-                height: 209,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(59)),
-                  color: Color.fromRGBO(189, 219, 194, 1),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 84,
-            left: 155,
-            child: Transform.rotate(
-              angle: 90 * (math.pi / 180),
-              child: Container(
-                width: 12,
-                height: 81,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(59)),
-                  color: Color.fromRGBO(134, 210, 147, 1),
-                ),
-              ),
-            ),
-          ),
-          const Positioned(
-            top: 140,
-            left: 261,
-            child: Text(
-              '1000 cal',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Color.fromRGBO(134, 210, 147, 1),
-                fontFamily: 'Inter',
-                fontSize: 15,
-                letterSpacing: -0.3333333432674408,
-                fontWeight: FontWeight.normal,
-                height: 1,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 80,
-            left: 60,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ScanPage()),
-                );
-              },
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: const BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 1),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/icons/scan.png'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 80,
-            right: 60,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const GroceriesListPage()), // Replace with your groceries page widget
-                );
 
-              },
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: const BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 1),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/icons/groceries.png'),
-                        fit: BoxFit.cover,
+
+
+
+
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end, // Move o conteúdo para o rodapé
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 40), // Ajuste para posicionar os botões
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround, // Alinha os botões horizontalmente
+                        children: [
+                          // Botão de scan
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ScanPage(),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              decoration: const BoxDecoration(
+                                color: Color.fromRGBO(255, 255, 255, 1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Container(
+                                  width: 80,
+                                  height: 80,
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage('assets/images/icons/scan.png'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Botão de groceries
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const GroceriesListPage(),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              decoration: const BoxDecoration(
+                                color: Color.fromRGBO(255, 255, 255, 1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Container(
+                                  width: 80,
+                                  height: 80,
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage('assets/images/icons/groceries.png'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ),
+
+
+
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }
