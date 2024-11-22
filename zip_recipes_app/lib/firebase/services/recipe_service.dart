@@ -6,6 +6,38 @@ class RecipeService {
   final _recipesCollection = FirebaseFirestore.instance.collection('recipes');
   final IngredientService _ingredientService = IngredientService();
 
+  // Add a new recipe
+  Future<String?> addRecipe(Recipe recipe) async {
+    try {
+      final ingredientIds = await Future.wait(recipe.ingredients.map((ingredient) async {
+        if (ingredient.id.isEmpty) {
+          final newId = await _ingredientService.addIngredient(ingredient);
+          return newId ?? '';
+        }
+        return ingredient.id;
+      }).toList());
+
+      final docRef = await _recipesCollection.add({
+        'name': recipe.name,
+        'image': recipe.image,
+        'salt': recipe.salt,
+        'fat': recipe.fat,
+        'energy': recipe.energy,
+        'protein': recipe.protein,
+        'ingredients': ingredientIds,
+        'information': recipe.information,
+        'guide': recipe.guide.map((step) => {
+              'description': step.description,
+              'timer': step.timer,
+            }).toList(),
+      });
+      return docRef.id; // Return the ID of the newly added recipe
+    } catch (e) {
+      print('Error adding recipe: $e');
+      return null;
+    }
+  }
+
   // Fetch all recipes
   Future<List<Recipe>> getAllRecipes() async {
     try {

@@ -4,6 +4,20 @@ import 'ingredient.dart';
 class IngredientService {
   final _ingredientsCollection = FirebaseFirestore.instance.collection('ingredients');
 
+  // Add a new ingredient
+  Future<String?> addIngredient(Ingredient ingredient) async {
+    try {
+      final docRef = await _ingredientsCollection.add({
+        'name': ingredient.name,
+        'type': ingredient.type,
+      });
+      return docRef.id; // Return the ID of the newly added ingredient
+    } catch (e) {
+      print('Error adding ingredient: $e');
+      return null;
+    }
+  }
+
   // Fetch an ingredient by ID
   Future<Ingredient?> getIngredientById(String id) async {
     try {

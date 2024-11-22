@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:zip_recipes_app/firebase/services/ingredient.dart';
 
@@ -14,6 +12,8 @@ class UserApp {
   // Calories
   final int objectiveCalories;
   final int currentCalories;
+  // Favorite Recipes
+  final List<String> favoriteRecipes;
   // Ingredients owned
   final List<Ingredient> ingredients;
 
@@ -27,6 +27,7 @@ class UserApp {
     required this.height,
     required this.objectiveCalories,
     required this.currentCalories,
+    required this.favoriteRecipes,
     required this.ingredients,
   });
 }

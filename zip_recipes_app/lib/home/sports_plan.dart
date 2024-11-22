@@ -1,8 +1,13 @@
+import 'dart:ffi' as ffi;
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // For date formatting
+import 'package:zip_recipes_app/firebase/services/user_service.dart';
 import '../widgets/num_field.dart';
 import '../widgets/date_field.dart'; // Assuming you have this widget
 import 'navigation.dart';
+
 
 class PlanInputScreen extends StatefulWidget {
   final String planTitle;
@@ -25,6 +30,26 @@ class _PlanInputScreenState extends State<PlanInputScreen> {
   final TextEditingController weightController = TextEditingController();
   final TextEditingController caloriesController = TextEditingController();
   final TextEditingController dobController = TextEditingController();
+
+  Future<void> _setPersonalInfo() async {
+  final UserService userService = UserService();
+
+  try {
+    // Convert the Date of Birth string to a DateTime object
+    DateTime? dob = DateFormat('dd-MM-yyyy').parse(dobController.text.trim());
+
+    // Update user information with a Timestamp for the Date of Birth
+    userService.updateUserSpecificDetails(
+      weightController.text.trim(),
+      heightController.text.trim(),
+      Timestamp.fromDate(dob),  // Pass the DateTime object here
+      caloriesController.text.trim(),
+    );
+  } catch (e) {
+    print('Error updating user info: $e');
+  }
+}
+
 
   @override
   void dispose() {
@@ -73,6 +98,9 @@ class _PlanInputScreenState extends State<PlanInputScreen> {
         ),
       );
     } else {
+      // Update the user's information
+      _setPersonalInfo();
+
       // All inputs are valid, navigate to the next screen
       Navigator.push(
         context,

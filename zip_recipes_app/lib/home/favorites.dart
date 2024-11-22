@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:zip_recipes_app/firebase/services/recipe.dart';
+import 'package:zip_recipes_app/firebase/services/recipe_service.dart';
+import 'package:zip_recipes_app/firebase/services/user_service.dart';
+import 'package:zip_recipes_app/home/recipe_page.dart';
 import 'package:zip_recipes_app/widgets/custom_favorite_element.dart';
-import 'FoodDetails.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
@@ -10,19 +13,44 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
-  final List<Map<String, String>> _allRecipes = List.generate(10, (index) {
-    return {
-      "name": "Tuna Salad $index",
-      "imagePath": 'assets/images/food_images/SaladaAtum.png',
-    };
-  });
-  List<Map<String, String>> _filteredRecipes = [];
+
+  List<Recipe> recipes = [];
+  bool isLoading = true; 
+
+  List<Recipe> _filteredRecipes = [];
   final TextEditingController _searchController = TextEditingController();
+
+  void _fetchFavoriteRecipes() async {
+    final UserService userService = UserService();
+    final RecipeService recipeService = RecipeService();
+
+     setState(() {
+      isLoading = true; // Start loading
+    });
+
+    try {
+      final favoriteRecipes = await userService.getFavoriteRecipes();
+      print('Found ${favoriteRecipes.length} favorite recipes.');
+
+      if (favoriteRecipes.length != 0) {
+        recipes = await recipeService.getRecipesByIds(favoriteRecipes);
+        print('Found ${recipes.length} favorite recipes.');
+      } 
+
+    } catch (e) {
+      print('Error fetching recipes: $e');
+    } finally {
+      setState(() {
+        _filteredRecipes = recipes;
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _filteredRecipes = _allRecipes;
+    _fetchFavoriteRecipes();
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -35,8 +63,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
   void _onSearchChanged() {
     setState(() {
-      _filteredRecipes = _allRecipes
-          .where((recipe) => recipe["name"]!
+      _filteredRecipes = recipes
+          .where((recipe) => recipe.name
           .toLowerCase()
           .contains(_searchController.text.toLowerCase()))
           .toList();
@@ -47,7 +75,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      body: Column(
+      body: isLoading
+      ? const Center(
+        child: CircularProgressIndicator(), // Show loading spinner
+      )
+      :Column(
         children: [
           // Page Title
           const Align(
@@ -92,19 +124,18 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 final recipe = _filteredRecipes[index];
                 return GestureDetector(
                   onTap: () {
-                    /*Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FoodDetailsPage(
-                          foodImage: recipe["imagePath"]!,
-                          foodName: recipe["name"]!,
+                        builder: (context) => RecipePage(
+                          recipe: recipe,
                         ),
                       ),
-                    );*/
+                    );
                   },
                   child: CustomFavoriteElement(
-                    imagePath: recipe["imagePath"]!,
-                    recipeName: recipe["name"]!,
+                    imagePath: recipe.image,
+                    recipeName: recipe.name,
                   ),
                 );
               },

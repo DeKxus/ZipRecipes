@@ -1,8 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:zip_recipes_app/firebase/services/ingredient.dart';
+import 'package:zip_recipes_app/firebase/services/user_service.dart';
 import 'foodListPage.dart'; // Import the dynamic FoodListPage
 
-class GroceriesListPage extends StatelessWidget {
+
+class GroceriesListPage extends StatefulWidget {
   const GroceriesListPage({super.key});
+
+  @override
+  State<GroceriesListPage> createState() => _GroceriesListPageState();
+}
+
+class _GroceriesListPageState extends State<GroceriesListPage> {
+
+  List<Ingredient> ingredients = [];
+
+  void _fetchUserIngredients () async {
+    final UserService userService = UserService();
+
+    try {
+      ingredients = await userService.getUserIngredients();
+      print('Found ${ingredients.length} user ingredients.');
+
+    } catch (e) {
+      print('Error fetching recipes: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserIngredients();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +79,7 @@ class GroceriesListPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                    const FoodListPage(foodType: 'Others'),
+                    FoodListPage(foodType: 'Others', ingredients: ingredients),
                   ),
                 );
               },
@@ -89,7 +118,7 @@ class GroceriesListPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const FoodListPage(foodType: 'Proteins'),
+                            builder: (context) => FoodListPage(foodType: 'Proteins',  ingredients: ingredients),
                           ),
                         );
                       },
@@ -123,7 +152,7 @@ class GroceriesListPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const FoodListPage(foodType: 'Dairy'),
+                            builder: (context) => FoodListPage(foodType: 'Dairy',  ingredients: ingredients),
                           ),
                         );
                       },
@@ -159,7 +188,7 @@ class GroceriesListPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                    const FoodListPage(foodType: 'Grains'),
+                    FoodListPage(foodType: 'Grains',  ingredients: ingredients),
                   ),
                 );
               },
@@ -191,7 +220,7 @@ class GroceriesListPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                    const FoodListPage(foodType: 'Vegetables'),
+                    FoodListPage(foodType: 'Vegetables',  ingredients: ingredients),
                   ),
                 );
               },

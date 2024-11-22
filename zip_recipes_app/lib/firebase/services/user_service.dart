@@ -19,14 +19,18 @@ class UserService {
           // Create UserApp from Firestore data
           return UserApp(
             id: document.id,
-            firstName: data['firstName'] ?? '',
-            lastName: data['lastName'] ?? '',
+            firstName: data['first name'] ?? '',
+            lastName: data['last name'] ?? '',
             email: data['email'] ?? user.email!,
             dateOfBirth: data['dateOfBirth'] ?? Timestamp(0, 0),
             weight: data['weight'] ?? 0,
             height: data['height'] ?? 0,
             objectiveCalories: data['objectiveCalories'] ?? 0,
             currentCalories: data['currentCalories'] ?? 0,
+            favoriteRecipes: (data['favorite recipes'] as List<dynamic>?)
+                  ?.map((item) => item.toString())
+                  .toList() ??
+              [],
             ingredients: (data['ingredients'] as List<dynamic>?)
                     ?.map((item) => Ingredient(
                           id: item['id'] ?? '',
@@ -43,43 +47,167 @@ class UserService {
     }
     return null;
   }
-
-  // Update user details (firstName and lastName)
-  Future<void> updateUserDetails(String uid, String firstName, String lastName) async {
+   // Update user details (weight, height, dob, objectiveCalories)
+  Future<void> updateUserSpecificDetails(
+    String weight,
+    String height,
+    Timestamp dob,
+    String objectiveCalories,
+  ) async {
     try {
-      await _usersCollection.doc(uid).update({
-        'firstName': firstName,
-        'lastName': lastName,
-      });
+      final user = _auth.currentUser;
+      if (user != null) {
+        FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+          'weight': weight,
+          'heigth': height,
+          'date of birth': dob,
+          'objective calories': objectiveCalories,
+        });
+        print("User details updated successfully!");
+      } else {
+        print("No user is currently logged in.");
+      }
     } catch (e) {
       print('Error updating user details: $e');
     }
   }
 
-  // Update user calories (objective and current)
-  Future<void> updateUserCalories(String uid, int objectiveCalories, int currentCalories) async {
+
+  // Update user details (firstName and lastName)
+  Future<void> updateUserDetails(String firstName, String lastName) async {
     try {
-      await _usersCollection.doc(uid).update({
-        'objectiveCalories': objectiveCalories,
-        'currentCalories': currentCalories,
-      });
+      final user = _auth.currentUser;
+      if (user != null) {
+        await _usersCollection.doc(user.uid).update({
+          'first name': firstName,
+          'last name': lastName,
+        });
+      }
+    } catch (e) {
+      print('Error updating user details: $e');
+    }
+  }
+
+  Future<Map<String, String?>> getUserDetails() async {
+  try {
+    final user = _auth.currentUser;
+    if (user != null) {
+      // Fetch the user document from Firestore
+      final userDoc = await _usersCollection.doc(user.uid).get();
+      
+      // Check if the document exists
+      if (userDoc.exists) {
+        final data = userDoc.data() as Map<String, dynamic>;
+        // Return the first and last name from the user document
+        return {
+          'first name': data['first name'] as String?,
+          'last name': data['last name'] as String?,
+        };
+      } else {
+        print('User document does not exist.');
+        return {};
+      }
+    } else {
+      print('No user is currently logged in.');
+      return {};
+    }
+  } catch (e) {
+    print('Error fetching user details: $e');
+    return {};
+  }
+}
+
+  // Update user calories (objective and current)
+  Future<void> updateUserCalories(int objectiveCalories, int currentCalories) async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        await _usersCollection.doc(user.uid).update({
+          'objective calories': objectiveCalories,
+          'current calories': currentCalories,
+        });
+      }
     } catch (e) {
       print('Error updating user calories: $e');
     }
   }
 
   // Update user ingredients
-  Future<void> updateUserIngredients(String uid, List<Ingredient> ingredients) async {
+  Future<void> updateUserIngredients(List<Ingredient> ingredients) async {
     try {
-      await _usersCollection.doc(uid).update({
-        'ingredients': ingredients.map((ingredient) => {
-              'id': ingredient.id,
-              'name': ingredient.name,
-              'type': ingredient.type,
-            }).toList(),
-      });
+      final user = _auth.currentUser;
+      if (user != null) {
+        await _usersCollection.doc(user.uid).update({
+          'ingredients': ingredients.map((ingredient) => {
+                'id': ingredient.id,
+                'name': ingredient.name,
+                'type': ingredient.type,
+              }).toList(),
+        });
+      }
     } catch (e) {
       print('Error updating user ingredients: $e');
     }
+  }
+
+  // Get the ingredients of the current logged-in user
+  Future<List<Ingredient>> getUserIngredients() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        final document = await _usersCollection.doc(user.uid).get();
+        if (document.exists) {
+          final data = document.data() as Map<String, dynamic>;
+          final ingredients = (data['ingredients'] as List<dynamic>?)
+                  ?.map((item) => Ingredient(
+                        id: item['id'] ?? '',
+                        name: item['name'] ?? '',
+                        type: item['type'] ?? '',
+                      ))
+                  .toList() ??
+              [];
+          return ingredients;
+        }
+      }
+    } catch (e) {
+      print('Error fetching user ingredients: $e');
+    }
+    return [];
+  }
+
+  /// Add a recipe to the user's favorite recipes list
+  Future<void> addFavoriteRecipe(String recipeId) async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        await _usersCollection.doc(user.uid).update({
+          'favorite recipes': FieldValue.arrayUnion([recipeId]),
+        });
+        print('Recipe $recipeId added to favorites.');
+      }
+    } catch (e) {
+      print('Error adding favorite recipe: $e');
+    }
+  }
+
+  /// Get the list of favorite recipe IDs for the current user
+  Future<List<String>> getFavoriteRecipes() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        final document = await _usersCollection.doc(user.uid).get();
+        if (document.exists) {
+          final data = document.data() as Map<String, dynamic>;
+          final favoriteRecipes = (data['favorite recipes'] as List<dynamic>?)
+                  ?.map((item) => item.toString())
+                  .toList() ??
+              [];
+          return favoriteRecipes;
+        }
+      }
+    } catch (e) {
+      print('Error fetching favorite recipes: $e');
+    }
+    return [];
   }
 }

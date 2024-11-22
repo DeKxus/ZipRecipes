@@ -1,38 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:zip_recipes_app/firebase/services/ingredient.dart';
 
-class Ingredient {
-  final String id;
-  final String name;
-  final String type;
 
-  Ingredient({
-    required this.id,
-    required this.name,
-    required this.type,
-  });
-}
 
 class FoodListPage extends StatefulWidget {
   final String foodType;
+  final List<Ingredient> ingredients;
 
-  const FoodListPage({super.key, required this.foodType});
+  const FoodListPage({super.key, required this.foodType, required this.ingredients});
 
   @override
   State<FoodListPage> createState() => _FoodListPageState();
 }
 
 class _FoodListPageState extends State<FoodListPage> {
-  final List<Ingredient> ingredients = [
-    Ingredient(id: '1', name: 'Chicken', type: 'Proteins'),
-    Ingredient(id: '2', name: 'Beef', type: 'Proteins'),
-    Ingredient(id: '3', name: 'Fish', type: 'Proteins'),
-    Ingredient(id: '4', name: 'Milk', type: 'Dairy'),
-    Ingredient(id: '5', name: 'Cheese', type: 'Dairy'),
-    Ingredient(id: '6', name: 'Carrot', type: 'Vegetables'),
-    Ingredient(id: '7', name: 'Broccoli', type: 'Vegetables'),
-    Ingredient(id: '8', name: 'Rice', type: 'Grains'),
-    Ingredient(id: '9', name: 'Pasta', type: 'Grains'),
-  ];
 
   late List<Ingredient> filteredIngredients;
   final TextEditingController _searchController = TextEditingController();
@@ -40,8 +21,9 @@ class _FoodListPageState extends State<FoodListPage> {
   @override
   void initState() {
     super.initState();
+    print("passed ingredients ${widget.ingredients.length}");
     // Filter ingredients based on the initial food type
-    filteredIngredients = ingredients
+    filteredIngredients = widget.ingredients
         .where((ingredient) => ingredient.type == widget.foodType)
         .toList();
 
@@ -55,12 +37,12 @@ class _FoodListPageState extends State<FoodListPage> {
     setState(() {
       if (query.isEmpty) {
         // Show all ingredients of the selected type if query is empty
-        filteredIngredients = ingredients
+        filteredIngredients = widget.ingredients
             .where((ingredient) => ingredient.type == widget.foodType)
             .toList();
       } else {
         // Filter by name and type
-        filteredIngredients = ingredients
+        filteredIngredients = widget.ingredients
             .where((ingredient) =>
         ingredient.type == widget.foodType &&
             ingredient.name.toLowerCase().contains(query.toLowerCase()))

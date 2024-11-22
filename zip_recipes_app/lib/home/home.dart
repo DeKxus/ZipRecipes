@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:firebase_auth/firebase_auth.dart'; // Importa o FirebaseAuth
-import 'package:zip_recipes_app/firebase/services/ingredient.dart';
 import 'package:zip_recipes_app/firebase/services/recipe.dart';
+import 'package:zip_recipes_app/firebase/services/recipe_service.dart';
+import 'package:zip_recipes_app/firebase/services/user_service.dart';
 import 'package:zip_recipes_app/home/personal_info.dart';
 import 'package:zip_recipes_app/home/recipe_page.dart';
 import 'package:zip_recipes_app/home/scan.dart';
 import 'package:zip_recipes_app/home/groceries.dart';
-
-import 'FoodDetails.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -26,59 +25,49 @@ class _HomePageState extends State<HomePage> {
   String userName = "User";
   int currentRecipeIndex = 0;
   // Create a sample Recipe object for testing
-  final List<Recipe> recipes = [
-    Recipe(
-      id: '1',
-      name: 'Tuna Salad',
-      image: 'assets/images/food_images/SaladaAtum.png',
-      salt: '2g',
-      fat: '10g',
-      energy: '250kcal',
-      protein: '15g',
-      ingredients: [
-        Ingredient(id: 'riceId', name: 'Rice', type: 'Grain'),
-        Ingredient(id: 'appleId', name: 'Apple', type: 'Fruit'),
-        Ingredient(id: 'lettuceId', name: 'Lettuce', type: 'Vegetable'),
-      ],
-      information: 'This is a simple and healthy tuna salad recipe.',
-      guide: [
-        RecipeStep(description: 'Preheat the oven to 350°F (175°C).'),
-        RecipeStep(description: 'Mix dry ingredients together.', timer: 30),
-        RecipeStep(description: 'Add wet ingredients and mix until smooth.', timer: 30),
-        RecipeStep(description: 'Bake for 30 minutes.', timer: 30),
-        RecipeStep(description: 'Let it cool for 15 minutes.', timer: 15),
-      ],
-    ),
+  List<Recipe> recipes = [];
 
-    Recipe(
-      id: '2',
-      name: 'Chicken Salad',
-      image: 'assets/images/food_images/ChickenSalad.png',
-      salt: '2g',
-      fat: '10g',
-      energy: '250kcal',
-      protein: '15g',
-      ingredients: [
-        Ingredient(id: 'riceId', name: 'Rice', type: 'Grain'),
-        Ingredient(id: 'appleId', name: 'Apple', type: 'Fruit'),
-        Ingredient(id: 'lettuceId', name: 'Lettuce', type: 'Vegetable'),
-      ],
-      information: 'This is a simple and healthy tuna salad recipe.',
-      guide: [
-        RecipeStep(description: 'Preheat the oven to 350°F (175°C).'),
-        RecipeStep(description: 'Mix dry ingredients together.', timer: 30),
-        RecipeStep(description: 'Add wet ingredients and mix until smooth.',timer: 30),
-        RecipeStep(description: 'Bake for 30 minutes.', timer: 30),
-        RecipeStep(description: 'Let it cool for 15 minutes.', timer: 15),
-      ],
-    ),
-  ];
+  bool isLoading = true; // Track loading state
+
+  void _fetchRecipes() async {
+    final UserService userService = UserService();
+    final RecipeService recipeService = RecipeService();
+
+    setState(() {
+      isLoading = true; // Start loading
+    });
+
+    try {
+      final ingredients = await userService.getUserIngredients();
+      final ingredientIds = ingredients.map((ingredient) => ingredient.id).toList();
+
+      if (ingredientIds.isNotEmpty) {
+        recipes = await recipeService.getRecipesWithIngredients(ingredientIds);
+        print('Found ${recipes.length} recipes using user ingredients.');
+
+        if(recipes.length == 0){
+          recipes = await recipeService.getAllRecipes();
+          print('User has ingredients but fetched all ${recipes.length} recipes.');
+        }
+      } else {
+        recipes = await recipeService.getAllRecipes();
+        print('User has no ingredients. Fetched all ${recipes.length} recipes.');
+      }
+    } catch (e) {
+      print('Error fetching recipes: $e');
+    } finally {
+      setState(() {
+        isLoading = false; // Stop loading after fetching
+      });
+    }
+  }
 
 
   @override
   void initState() {
     super.initState();
     _fetchUserName();
+    _fetchRecipes();
   }
 
   void _fetchUserName() {
@@ -114,7 +103,11 @@ class _HomePageState extends State<HomePage> {
       decoration: const BoxDecoration(
         color: Color.fromRGBO(245, 245, 245, 1),
       ),
-      child: Stack(
+      child: isLoading
+      ? const Center(
+        child: CircularProgressIndicator(), // Show loading spinner
+      )
+      : Stack(
         children: <Widget>[
           // Circular background
           Center(
