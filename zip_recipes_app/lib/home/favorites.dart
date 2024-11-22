@@ -13,7 +13,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   final List<Map<String, String>> _allRecipes = List.generate(10, (index) {
     return {
       "name": "Tuna Salad $index",
-      "imagePath": 'assets/images/icons/food.png',
+      "imagePath": 'assets/images/food_images/SaladaAtum.png',
     };
   });
   List<Map<String, String>> _filteredRecipes = [];

@@ -22,7 +22,7 @@ class CustomCircularButton extends StatelessWidget {
         width: diameter,
         height: diameter,
         padding: EdgeInsets.all(padding),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white, // White background
           shape: BoxShape.circle, // Circular shape
         ),

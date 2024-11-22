@@ -51,7 +51,7 @@ class _NavigationPageState extends State<NavigationPage> {
         }),
       ),
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: const Color(0xFFF5F5F5),
+        backgroundColor: Colors.transparent,
         color: const Color(0xFF86D293),
         animationDuration: const Duration(milliseconds: 300),
         items: const [

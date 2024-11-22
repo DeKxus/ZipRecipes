@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     Recipe(
       id: '1',
       name: 'Tuna Salad',
-      image: 'assets/images/icons/food.png',
+      image: 'assets/images/food_images/SaladaAtum.png',
       salt: '2g',
       fat: '10g',
       energy: '250kcal',
@@ -52,8 +52,8 @@ class _HomePageState extends State<HomePage> {
 
     Recipe(
       id: '2',
-      name: 'Chicken Rice',
-      image: 'assets/images/icons/food2.png',
+      name: 'Chicken Salad',
+      image: 'assets/images/food_images/ChickenSalad.png',
       salt: '2g',
       fat: '10g',
       energy: '250kcal',
@@ -153,11 +153,12 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.center, // Centraliza verticalmente
                 crossAxisAlignment: CrossAxisAlignment.center, // Centraliza horizontalmente
                 children: [
+                  const SizedBox(height: 45),
                   Transform.translate(
                     offset: Offset(_dragOffset, 20), // Baixa a imagem ajustando a posição
                     child: Container(
-                      width: 270,
-                      height: 270,
+                      width: 180,
+                      height: 180,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
@@ -167,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10), // Reduz a distância entre a imagem e o título
+                  const SizedBox(height: 50), // Reduz a distância entre a imagem e o título
                   Text(
                     recipes[currentRecipeIndex].name,
                     style: const TextStyle(

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zip_recipes_app/firebase/services/recipe.dart';
 import 'package:zip_recipes_app/home/GuidePage.dart';
-import 'package:zip_recipes_app/home/recipe_guide.dart';
 import 'package:zip_recipes_app/widgets/custom_pill_button.dart';
 import 'package:zip_recipes_app/widgets/custom_recipe_detail_element.dart';
-
 
 class RecipePage extends StatelessWidget {
   final Recipe recipe;
@@ -18,25 +16,16 @@ class RecipePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.grey),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: SingleChildScrollView(
+      body:
+      SingleChildScrollView(
         child: Stack(
           children: [
-            // Circle in the background
+            // Background Circles and Decorations
             Positioned(
-              top: 110, // Adjust as needed to place the circle
-              left: -150, // Adjust as needed to place the circle
+              top: 110,
+              left: -150,
               child: Container(
-                width: 700, // Diameter of the circle
+                width: 700,
                 height: 700,
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -44,12 +33,11 @@ class RecipePage extends StatelessWidget {
                 ),
               ),
             ),
-
             Positioned(
-              top: 300, // Adjust as needed to place the circle
-              left: -150, // Adjust as needed to place the circle
+              top: 300,
+              left: -150,
               child: Container(
-                width: 700, // Diameter of the circle
+                width: 700,
                 height: 1000,
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -57,43 +45,42 @@ class RecipePage extends StatelessWidget {
                 ),
               ),
             ),
-
-            // Main content
+            // Scrollable Content
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 25),
-                //recipe image
-                 Image.asset(
-                  recipe.image,
-                  width: 170,
-                  height: 170,
-                  fit: BoxFit.cover,
-                ),
-                const SizedBox(height: 25),
-                    
-                //title
-                Text(
-                  recipe.name,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold
+                const SizedBox(height: 60), // Space for the back button
+                // Recipe Image
+                Center(
+                  child: Image.asset(
+                    recipe.image,
+                    width: 170,
+                    height: 170,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                    
-                //details
-                const Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-                      child: const Text(
-                        'Details',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold
-                        ),
-                      ),
+                const SizedBox(height: 25),
+                // Recipe Title
+                Center(
+                  child: Text(
+                    recipe.name,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Details Section
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                  child: Text(
+                    'Details',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -107,25 +94,20 @@ class RecipePage extends StatelessWidget {
                     CustomRecipeDetailElement(topText: 'Protein', bottomText: recipe.protein),
                   ],
                 ),
-                
-                    
-                //recipe information
-                const Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-                      child: Text(
-                        'Recipe',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold
-                        ),
-                      ),
+                const SizedBox(height: 16),
+                // Recipe Information Section
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                  child: Text(
+                    'Recipe',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
+                  ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Text(
                     recipe.information,
                     style: const TextStyle(
@@ -133,34 +115,34 @@ class RecipePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
-
-                //cook it button
-                CustomPillButton(
-                  text: 'COOK IT',
-                  onPressed: () {
-                     Navigator.push(
-                       context,
-                       MaterialPageRoute(builder: (context) => GuidePage(guide: recipe.guide,)),
-                     );
-                  },
-                ),
-                const SizedBox(height: 8),
-
-                //list of ingredients
-                const Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                      child: Text(
-                        'Ingredients',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold
+                const SizedBox(height: 16),
+                // Cook It Button
+                Center(
+                  child: CustomPillButton(
+                    text: 'COOK IT',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GuidePage(
+                            guide: recipe.guide,
+                          ),
                         ),
-                      ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Ingredients Section
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                  child: Text(
+                    'Ingredients',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 22),
@@ -186,8 +168,19 @@ class RecipePage extends StatelessWidget {
                     }).toList(),
                   ),
                 ),
-                const SizedBox(height: 25),    
+                const SizedBox(height: 25),
               ],
+            ),
+            // Fixed Back Button
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 10, // Adjust for status bar
+              left: 10,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.grey),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
           ],
         ),

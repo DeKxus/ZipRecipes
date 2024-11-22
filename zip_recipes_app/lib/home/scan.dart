@@ -59,6 +59,15 @@ class _ScanPageState extends State<ScanPage> {
             Navigator.pop(context);
           },
         ),
+        title: const Text(
+          'Scan Ingredients', // Adicionando o título
+          style: TextStyle(
+            color: Colors.black, // Cor do texto
+            fontSize: 24.0, // Tamanho da fonte
+            fontWeight: FontWeight.bold, // Negrito
+          ),
+        ),
+        centerTitle: true, // Centraliza o título
       ),
       body: Center(
         child: Column(
