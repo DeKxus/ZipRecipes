@@ -36,90 +36,154 @@ void addSampleData() async {
   final recipeService = RecipeService();
 
   // Add some ingredients
-  final riceId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Rice', type: 'Grain'));
-  final appleId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Apple', type: 'Fruit'));
-  final lettuceId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Lettuce', type: 'Vegetable'));
-  final chickenId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Chicken', type: 'Meat'));
-  final tomatoId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Tomato', type: 'Vegetable'));
+  final riceId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Rice', type: 'Grains'));
+  final codId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Cod', type: 'Proteins'));
+  final mushroomId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Mushroom', type: 'Vegetables'));
+  final chickenId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Chicken', type: 'Proteins'));
+  final salmonId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Salmon', type: 'Proteins'));
   final cheeseId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Cheese', type: 'Dairy'));
+  final lettuceId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Lettuce', type: 'Vegetables'));
+  final tomatoId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Tomato', type: 'Vegetables'));
+  final carrotId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Carrot', type: 'Vegetables'));
+  final cucumberId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Cucumber', type: 'Vegetables'));
+  final oliveOilId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Olive Oil', type: 'Others'));
+  final garlicId = await ingredientService.addIngredient(Ingredient(id: '', name: 'Garlic', type: 'Others'));
 
   if (riceId != null &&
-      appleId != null &&
-      lettuceId != null &&
+      codId != null &&
+      mushroomId != null &&
       chickenId != null &&
+      salmonId != null &&
+      cheeseId != null &&
+      lettuceId != null &&
       tomatoId != null &&
-      cheeseId != null) {
-    // Add the first recipe: Tuna Salad
+      carrotId != null &&
+      cucumberId != null &&
+      oliveOilId != null &&
+      garlicId != null) {
+    // Add the first recipe: Vegetable Cod
+    final vegetableCodId = await recipeService.addRecipe(Recipe(
+      id: '',
+      name: 'Vegetable Cod',
+      image: 'assets/images/food_images/BacalhauVegetais.png',
+      salt: '2.5g',
+      fat: '6g',
+      energy: '250kcal',
+      protein: '30g',
+      ingredients: [
+        Ingredient(id: codId, name: 'Cod', type: 'Proteins'),
+        Ingredient(id: mushroomId, name: 'Mushroom', type: 'Vegetables'),
+        Ingredient(id: lettuceId, name: 'Lettuce', type: 'Vegetables'),
+        Ingredient(id: garlicId, name: 'Garlic', type: 'Others'),
+        Ingredient(id: oliveOilId, name: 'Olive Oil', type: 'Others'),
+      ],
+      information: 'A light and healthy cod dish with fresh vegetables.',
+      guide: [
+        RecipeStep(description: 'Season cod with salt, garlic, and olive oil.'),
+        RecipeStep(description: 'Steam cod and mushrooms together.', timer: 15),
+        RecipeStep(description: 'Serve cod on a bed of fresh lettuce.'),
+      ],
+    ));
+    print('Vegetable Cod Recipe added with ID: $vegetableCodId');
+
+    // Add the second recipe: Chicken Salad
+    final chickenSaladId = await recipeService.addRecipe(Recipe(
+      id: '',
+      name: 'Chicken Salad',
+      image: 'assets/images/food_images/ChickenSalad.png',
+      salt: '3g',
+      fat: '8g',
+      energy: '280kcal',
+      protein: '35g',
+      ingredients: [
+        Ingredient(id: chickenId, name: 'Chicken', type: 'Proteins'),
+        Ingredient(id: lettuceId, name: 'Lettuce', type: 'Vegetables'),
+        Ingredient(id: tomatoId, name: 'Tomato', type: 'Vegetables'),
+        Ingredient(id: cucumberId, name: 'Cucumber', type: 'Vegetables'),
+        Ingredient(id: oliveOilId, name: 'Olive Oil', type: 'Others'),
+      ],
+      information: 'A healthy and protein-packed chicken salad.',
+      guide: [
+        RecipeStep(description: 'Grill chicken until fully cooked.', timer: 15),
+        RecipeStep(description: 'Chop lettuce, tomatoes, and cucumbers and mix in a bowl.'),
+        RecipeStep(description: 'Add sliced grilled chicken and drizzle with olive oil.'),
+      ],
+    ));
+    print('Chicken Salad Recipe added with ID: $chickenSaladId');
+
+    // Add the third recipe: Mushroom and Vegetables
+    final mushroomAndVegetablesId = await recipeService.addRecipe(Recipe(
+      id: '',
+      name: 'Mushroom and Vegetables',
+      image: 'assets/images/food_images/CogumelosVegetais.png',
+      salt: '1.8g',
+      fat: '4g',
+      energy: '150kcal',
+      protein: '10g',
+      ingredients: [
+        Ingredient(id: mushroomId, name: 'Mushroom', type: 'Vegetables'),
+        Ingredient(id: tomatoId, name: 'Tomato', type: 'Vegetables'),
+        Ingredient(id: carrotId, name: 'Carrot', type: 'Vegetables'),
+        Ingredient(id: garlicId, name: 'Garlic', type: 'Others'),
+        Ingredient(id: oliveOilId, name: 'Olive Oil', type: 'Others'),
+      ],
+      information: 'A simple and delicious vegetable-based dish.',
+      guide: [
+        RecipeStep(description: 'Sauté mushrooms, tomatoes, and carrots in olive oil.', timer: 10),
+        RecipeStep(description: 'Add minced garlic and season with salt.'),
+        RecipeStep(description: 'Serve as a side or a light main dish.'),
+      ],
+    ));
+    print('Mushroom and Vegetables Recipe added with ID: $mushroomAndVegetablesId');
+
+    // Add the fourth recipe: Tuna Salad
     final tunaSaladId = await recipeService.addRecipe(Recipe(
-      id: '', // ID will be generated by Firebase
+      id: '',
       name: 'Tuna Salad',
-      image: 'assets/images/icons/food.png',
+      image: 'assets/images/food_images/SaladaAtum.png',
       salt: '2g',
       fat: '10g',
-      energy: '250kcal',
-      protein: '15g',
+      energy: '330kcal',
+      protein: '33g',
       ingredients: [
-        Ingredient(id: riceId, name: 'Rice', type: 'Grain'),
-        Ingredient(id: appleId, name: 'Apple', type: 'Fruit'),
-        Ingredient(id: lettuceId, name: 'Lettuce', type: 'Vegetable'),
+        Ingredient(id: lettuceId, name: 'Lettuce', type: 'Vegetables'),
+        Ingredient(id: tomatoId, name: 'Tomato', type: 'Vegetables'),
+        Ingredient(id: cucumberId, name: 'Cucumber', type: 'Vegetables'),
+        Ingredient(id: salmonId, name: 'Salmon', type: 'Proteins'),
+        Ingredient(id: oliveOilId, name: 'Olive Oil', type: 'Others'),
       ],
-      information: 'This is a simple and healthy tuna salad recipe.',
+      information: 'A simple and healthy tuna salad recipe.',
       guide: [
-        RecipeStep(description: 'Preheat the oven to 350°F (175°C).'),
-        RecipeStep(description: 'Mix dry ingredients together.', timer: 30),
-        RecipeStep(description: 'Add wet ingredients and mix until smooth.', timer: 30),
-        RecipeStep(description: 'Bake for 30 minutes.', timer: 30),
-        RecipeStep(description: 'Let it cool for 15 minutes.', timer: 15),
+        RecipeStep(description: 'Chop lettuce, tomatoes, and cucumbers and mix in a bowl.'),
+        RecipeStep(description: 'Add chunks of salmon and drizzle with olive oil.'),
+        RecipeStep(description: 'Mix well and serve chilled.'),
       ],
     ));
     print('Tuna Salad Recipe added with ID: $tunaSaladId');
 
-    // Add the second recipe: Grilled Chicken Salad
-    final grilledChickenSaladId = await recipeService.addRecipe(Recipe(
-      id: '', // ID will be generated by Firebase
-      name: 'Grilled Chicken Salad',
-      image: 'assets/images/icons/grilled_chicken.png',
-      salt: '3g',
+    // Add the fifth recipe: Salmon Salad
+    final salmonSaladId = await recipeService.addRecipe(Recipe(
+      id: '',
+      name: 'Salmon Salad',
+      image: 'assets/images/food_images/SalmonSalad.png',
+      salt: '2.2g',
       fat: '12g',
-      energy: '300kcal',
-      protein: '25g',
+      energy: '320kcal',
+      protein: '28g',
       ingredients: [
-        Ingredient(id: chickenId, name: 'Chicken', type: 'Meat'),
-        Ingredient(id: lettuceId, name: 'Lettuce', type: 'Vegetable'),
-        Ingredient(id: tomatoId, name: 'Tomato', type: 'Vegetable'),
-      ],
-      information: 'A protein-packed grilled chicken salad with fresh vegetables.',
-      guide: [
-        RecipeStep(description: 'Season chicken with salt and pepper.'),
-        RecipeStep(description: 'Grill chicken until cooked through.', timer: 15),
-        RecipeStep(description: 'Chop vegetables and mix in a bowl.'),
-        RecipeStep(description: 'Top with grilled chicken slices and serve.', timer: 5),
-      ],
-    ));
-    print('Grilled Chicken Salad Recipe added with ID: $grilledChickenSaladId');
-
-    // Add the third recipe: Tomato Cheese Rice
-    final tomatoCheeseRiceId = await recipeService.addRecipe(Recipe(
-      id: '', // ID will be generated by Firebase
-      name: 'Tomato Cheese Rice',
-      image: 'assets/images/icons/tomato_rice.png',
-      salt: '1.5g',
-      fat: '8g',
-      energy: '200kcal',
-      protein: '10g',
-      ingredients: [
-        Ingredient(id: riceId, name: 'Rice', type: 'Grain'),
-        Ingredient(id: tomatoId, name: 'Tomato', type: 'Vegetable'),
+        Ingredient(id: salmonId, name: 'Salmon', type: 'Proteins'),
+        Ingredient(id: lettuceId, name: 'Lettuce', type: 'Vegetables'),
         Ingredient(id: cheeseId, name: 'Cheese', type: 'Dairy'),
+        Ingredient(id: carrotId, name: 'Carrot', type: 'Vegetables'),
+        Ingredient(id: oliveOilId, name: 'Olive Oil', type: 'Others'),
       ],
-      information: 'A delicious tomato and cheese rice dish, easy to make.',
+      information: 'A creamy salmon salad with fresh greens.',
       guide: [
-        RecipeStep(description: 'Cook rice until tender.', timer: 20),
-        RecipeStep(description: 'Sauté tomatoes in a pan.', timer: 10),
-        RecipeStep(description: 'Mix rice and tomatoes, then top with cheese.'),
-        RecipeStep(description: 'Bake until cheese is melted.', timer: 10),
+        RecipeStep(description: 'Grill salmon until fully cooked.', timer: 15),
+        RecipeStep(description: 'Mix lettuce, shredded cheese, and grated carrot in a bowl.'),
+        RecipeStep(description: 'Add grilled salmon chunks and drizzle with olive oil.'),
       ],
     ));
-    print('Tomato Cheese Rice Recipe added with ID: $tomatoCheeseRiceId');
+    print('Salmon Salad Recipe added with ID: $salmonSaladId');
   }
 }
